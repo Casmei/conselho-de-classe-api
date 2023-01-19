@@ -14,7 +14,7 @@ import { UpdateCouncilDto } from './dto/update-council.dto';
 import { VerifyRole } from '../auth/decorators/verify-role.decorator';
 import { userRoles } from '../user/role.enum';
 
-@Controller('council')
+@Controller('councils')
 export class CouncilController {
   constructor(private readonly councilService: CouncilService) {}
 

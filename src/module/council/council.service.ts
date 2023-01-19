@@ -33,7 +33,7 @@ export class CouncilService {
 
   findOne(id: string) {
     try {
-      return this.councilRepository.findBy({ id });
+      return this.councilRepository.findOneBy({ id });
     } catch (error) {
       throw new BadRequestException(error);
     }
@@ -41,7 +41,6 @@ export class CouncilService {
 
   async update(id: string, updateCouncilDto: UpdateCouncilDto) {
     try {
-      // const council = await this.councilRepository.findOneBy({ id });
       return this.councilRepository.update(id, {
         ...updateCouncilDto,
       });
