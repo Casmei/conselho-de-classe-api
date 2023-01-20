@@ -28,12 +28,12 @@ import { StudentModule } from './module/student/student.module';
     }),
     MailerModule.forRoot({
       transport: {
-        host: 'smtp.ethereal.email',
-        secure: false,
-        port: 587,
+        host: 'smtp.hostinger.com',
+        secure: true,
+        port: 465,
         auth: {
-          user: 'lilyan.kuvalis@ethereal.email',
-          pass: 'vN7TAAJavHg54kqvKF',
+          user: 'desenvolvimento@singlex.com.br',
+          pass: 'Dev@!!!1234',
         },
       },
       defaults: {

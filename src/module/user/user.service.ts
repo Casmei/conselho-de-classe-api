@@ -46,7 +46,7 @@ export class UserService {
 
   async findOneByCredentials(credentials: LoginUser) {
     const user = await this.userRepository.findOne({
-      where: { name: credentials.name },
+      where: { email: credentials.email },
     });
 
     if (user && bcrypt.compareSync(credentials.password, user.password)) {
@@ -66,7 +66,11 @@ export class UserService {
       role: userRoles.TEACHER,
     });
 
-    this.teacherLoginMailProducer.sendMail({ name: user.name, password });
+    this.teacherLoginMailProducer.sendMail({
+      name: user.name,
+      email: data.email,
+      password,
+    });
 
     return this.userRepository.insert(user);
   }

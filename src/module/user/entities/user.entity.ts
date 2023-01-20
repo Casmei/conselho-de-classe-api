@@ -1,7 +1,7 @@
 import { Class } from 'src/module/class/entities/class.entity';
 import { Subject } from 'src/module/subject/entities/subject.entity';
 import CustomBaseEntity from 'src/shared/entity/CustomBaseEntity';
-import { Column, Entity, JoinTable, ManyToMany, OneToMany } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany } from 'typeorm';
 import { userRoles } from '../role.enum';
 
 @Entity('users')
@@ -9,7 +9,7 @@ export class User extends CustomBaseEntity {
   @Column()
   name: string;
 
-  @Column()
+  @Column({ unique: true })
   email: string;
 
   @Column()
@@ -18,11 +18,11 @@ export class User extends CustomBaseEntity {
   @Column({ type: 'enum', enum: userRoles, default: userRoles.MANAGER })
   role: userRoles;
 
-  @ManyToMany(() => Subject)
+  @ManyToMany(() => Subject, { cascade: true, onDelete: 'CASCADE' })
   @JoinTable()
   subjects: Subject[];
 
-  @ManyToMany(() => Class)
+  @ManyToMany(() => Class, { cascade: true, onDelete: 'CASCADE' })
   @JoinTable()
   classes: Class[];
 }
