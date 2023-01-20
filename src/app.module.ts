@@ -6,6 +6,8 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './module/auth/guards/jwt.guard';
 import { CouncilModule } from './module/council/council.module';
 import { CourseModule } from './module/course/course.module';
+import { ClassModule } from './module/class/class.module';
+import { SubjectModule } from './module/subject/subject.module';
 import RoleGuard from './module/auth/guards/role.guard';
 
 @Module({
@@ -24,6 +26,8 @@ import RoleGuard from './module/auth/guards/role.guard';
     UserModule,
     CouncilModule,
     CourseModule,
+    ClassModule,
+    SubjectModule,
   ],
   controllers: [],
   providers: [

@@ -36,11 +36,13 @@ export class CouncilController {
     return this.councilService.findOne(id);
   }
 
+  @VerifyRole(userRoles.MANAGER)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateCouncilDto: UpdateCouncilDto) {
     return this.councilService.update(id, updateCouncilDto);
   }
 
+  @VerifyRole(userRoles.MANAGER)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.councilService.remove(+id);

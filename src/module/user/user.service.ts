@@ -10,7 +10,7 @@ import { SignupDTO } from '../auth/dto/signup.dto';
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(User) private userRepository: Repository<User>,
+    @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {}
 
   async create(userCredentials: SignupDTO) {

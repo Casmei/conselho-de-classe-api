@@ -23,21 +23,25 @@ export class CourseController {
     return this.courseService.create(data);
   }
 
+  @VerifyRole(userRoles.MANAGER)
   @Get()
   findAll() {
     return this.courseService.findAll();
   }
 
+  @VerifyRole(userRoles.MANAGER)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.courseService.findOne(id);
   }
 
+  @VerifyRole(userRoles.MANAGER)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateCourseDto: UpdateCourseDto) {
     return this.courseService.update(id, updateCourseDto);
   }
 
+  @VerifyRole(userRoles.MANAGER)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.courseService.remove(id);
