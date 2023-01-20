@@ -1,16 +1,22 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
+import * as crypto from 'crypto';
+
 import { LoginUser } from './dto/login-user.dto';
 import { SignupDTO } from '../auth/dto/signup.dto';
+import { CreateTeacherDto } from './dto/create-teacher.dto';
+import { userRoles } from './role.enum';
+import { TeacherLoginMailConsumer } from './jobs/teacher-login-mail.consumer';
+import { TeacherLoginMailProducer } from './jobs/teacher-login-mail.producer';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
+    private readonly teacherLoginMailProducer: TeacherLoginMailProducer,
   ) {}
 
   async create(userCredentials: SignupDTO) {
@@ -50,11 +56,18 @@ export class UserService {
     return undefined;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
+  async createTeacher(data: CreateTeacherDto) {
+    const password = crypto.randomUUID().slice(0, 6);
+    const hashedPassword = bcrypt.hashSync(password, 10);
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+    const user = this.userRepository.create({
+      ...data,
+      password: hashedPassword,
+      role: userRoles.TEACHER,
+    });
+
+    this.teacherLoginMailProducer.sendMail({ name: user.name, password });
+
+    return this.userRepository.insert(user);
   }
 }

@@ -18,7 +18,7 @@ class AuthController {
   @SkipJwt()
   @Post('signup')
   async signup(@Body() data: SignupDTO) {
-    console.log(data);
+    //TODO: TÁ ACEITANDO OUTROS CAMPOS
     return await this.authService.createUserAccount(data);
   }
 }

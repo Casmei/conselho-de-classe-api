@@ -9,6 +9,9 @@ import { CourseModule } from './module/course/course.module';
 import { ClassModule } from './module/class/class.module';
 import { SubjectModule } from './module/subject/subject.module';
 import RoleGuard from './module/auth/guards/role.guard';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { BullModule } from '@nestjs/bull';
+import { StudentModule } from './module/student/student.module';
 
 @Module({
   imports: [
@@ -23,11 +26,32 @@ import RoleGuard from './module/auth/guards/role.guard';
       autoLoadEntities: true,
       synchronize: true,
     }),
+    MailerModule.forRoot({
+      transport: {
+        host: 'smtp.ethereal.email',
+        secure: false,
+        port: 587,
+        auth: {
+          user: 'lilyan.kuvalis@ethereal.email',
+          pass: 'vN7TAAJavHg54kqvKF',
+        },
+      },
+      defaults: {
+        from: '"nest-modules" <modules@nestjs.com>',
+      },
+    }),
+    BullModule.forRoot({
+      redis: {
+        host: 'localhost',
+        port: 6379,
+      },
+    }),
     UserModule,
     CouncilModule,
     CourseModule,
     ClassModule,
     SubjectModule,
+    StudentModule,
   ],
   controllers: [],
   providers: [
