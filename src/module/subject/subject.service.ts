@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateSubjectDto } from './dto/create-subject.dto';
@@ -34,16 +39,19 @@ export class SubjectService {
 
   async findOne(id: string) {
     try {
-      await this.subjectExists(id);
-      return this.subjectRepository.findOneBy({ id });
-    } catch (error) {
-      throw new BadRequestException();
-    }
+      const subject = this.subjectRepository.findOneOrFail({
+        where: { id },
+        cache: 60000,
+      });
+
+      if (!!subject) {
+        throw new HttpException('subject not found', HttpStatus.NOT_FOUND);
+      }
+    } catch (error) {}
   }
 
   async update(id: string, data: UpdateSubjectDto) {
     try {
-      await this.subjectExists(id);
       return this.subjectRepository.update(id, data);
     } catch (error) {
       throw new BadRequestException();
@@ -52,16 +60,9 @@ export class SubjectService {
 
   async remove(id: string) {
     try {
-      await this.subjectExists(id);
       return this.subjectRepository.softDelete(id);
     } catch (error) {
-      throw new BadRequestException();
-    }
-  }
-
-  private async subjectExists(id: string) {
-    if (!(await this.subjectRepository.findOneBy({ id }))) {
-      throw new BadRequestException();
+      throw new HttpException('subject not found', HttpStatus.NOT_FOUND);
     }
   }
 }

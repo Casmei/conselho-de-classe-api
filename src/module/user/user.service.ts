@@ -1,15 +1,19 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
 
-import { LoginUser } from './dto/login-user.dto';
-import { SignupDTO } from '../auth/dto/signup.dto';
+import { AuthLoginDTO } from '../auth/dto/auth-login.dto';
+import { AuthRegisterDTO } from '../auth/dto/auth-register.dto';
 import { CreateTeacherDto } from './dto/create-teacher.dto';
 import { userRoles } from './role.enum';
-import { TeacherLoginMailConsumer } from './jobs/teacher-login-mail.consumer';
 import { TeacherLoginMailProducer } from './jobs/teacher-login-mail.producer';
 
 @Injectable()
@@ -19,7 +23,9 @@ export class UserService {
     private readonly teacherLoginMailProducer: TeacherLoginMailProducer,
   ) {}
 
-  async create(userCredentials: SignupDTO) {
+  async create(userCredentials: AuthRegisterDTO) {
+    await this.existsEmail(userCredentials.email);
+
     return await this.userRepository.save(userCredentials);
   }
 
@@ -44,7 +50,7 @@ export class UserService {
     }
   }
 
-  async findOneByCredentials(credentials: LoginUser) {
+  async findOneByCredentials(credentials: AuthLoginDTO) {
     const user = await this.userRepository.findOne({
       where: { email: credentials.email },
     });
@@ -56,22 +62,34 @@ export class UserService {
     return undefined;
   }
 
-  async createTeacher(data: CreateTeacherDto) {
+  async createTeacher(userCredentials: CreateTeacherDto) {
+    await this.existsEmail(userCredentials.email);
+
     const password = crypto.randomUUID().slice(0, 6);
     const hashedPassword = bcrypt.hashSync(password, 10);
 
     const user = this.userRepository.create({
-      ...data,
+      ...userCredentials,
       password: hashedPassword,
       role: userRoles.TEACHER,
     });
 
     this.teacherLoginMailProducer.sendMail({
       name: user.name,
-      email: data.email,
+      email: userCredentials.email,
       password,
     });
 
     return this.userRepository.insert(user);
+  }
+
+  private async existsEmail(email: string) {
+    const user = await this.userRepository.countBy({
+      email,
+    });
+
+    if (!!user) {
+      throw new BadRequestException('Already existing email');
+    }
   }
 }

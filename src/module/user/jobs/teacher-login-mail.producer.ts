@@ -1,8 +1,7 @@
 import { InjectQueue } from '@nestjs/bull';
 import { Injectable } from '@nestjs/common';
 import { Queue } from 'bull';
-import { SignupDTO } from 'src/module/auth/dto/signup.dto';
-import { LoginUser } from '../dto/login-user.dto';
+import { AuthRegisterDTO } from 'src/module/auth/dto/auth-register.dto';
 
 @Injectable()
 export class TeacherLoginMailProducer {
@@ -10,7 +9,7 @@ export class TeacherLoginMailProducer {
     @InjectQueue('teacher-login-mail') private teacherLoginMail: Queue,
   ) {}
 
-  async sendMail(data: SignupDTO) {
+  async sendMail(data: AuthRegisterDTO) {
     await this.teacherLoginMail.add('send-mail', data);
   }
 }
