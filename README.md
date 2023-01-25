@@ -9,7 +9,7 @@ $ npm install
 $ cp .env.example .env
 ```
 
-## Running the app
+## Iniciando a aplicação
 
 ```bash
 # development
