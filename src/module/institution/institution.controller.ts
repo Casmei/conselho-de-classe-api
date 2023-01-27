@@ -1,34 +1,54 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Req,
+} from '@nestjs/common';
 import { InstitutionService } from './institution.service';
 import { CreateInstitutionDto } from './dto/create-institution.dto';
 import { UpdateInstitutionDto } from './dto/update-institution.dto';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Request } from 'express';
 
+@ApiTags('Instituição')
 @Controller('institution')
 export class InstitutionController {
   constructor(private readonly institutionService: InstitutionService) {}
 
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Cria uma instituição' })
   @Post()
-  create(@Body() createInstitutionDto: CreateInstitutionDto) {
-    return this.institutionService.create(createInstitutionDto);
+  create(
+    @Body() createInstitutionDto: CreateInstitutionDto,
+    @Req() req: Request,
+  ) {
+    const user = req.user;
+    return this.institutionService.create(user, createInstitutionDto);
   }
 
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Retorna todas as instituições do usuário' })
   @Get()
-  findAll() {
-    return this.institutionService.findAll();
+  findAllByUserId(@Req() req: Request) {
+    return this.institutionService.findAllByUser(req.user);
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.institutionService.findOne(+id);
+    //todo: implementar uma busca de instituição
   }
 
+  //todo: definir tipagem do meu req
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateInstitutionDto: UpdateInstitutionDto) {
-    return this.institutionService.update(+id, updateInstitutionDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.institutionService.remove(+id);
+  update(
+    @Param('id') id: string,
+    @Req() req: Request,
+    @Body() data: UpdateInstitutionDto,
+  ) {
+    return this.institutionService.update(id, req.user, data);
   }
 }

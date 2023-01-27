@@ -1,26 +1,57 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { UserService } from '../user/user.service';
 import { CreateInstitutionDto } from './dto/create-institution.dto';
 import { UpdateInstitutionDto } from './dto/update-institution.dto';
+import { Institution } from './entities/institution.entity';
 
 @Injectable()
 export class InstitutionService {
-  create(createInstitutionDto: CreateInstitutionDto) {
-    return 'This action adds a new institution';
+  constructor(
+    @InjectRepository(Institution)
+    private readonly institutionRepository: Repository<Institution>,
+    private userService: UserService,
+  ) {}
+  //todo: tipar meu user
+  async create(user: any, data: CreateInstitutionDto) {
+    try {
+      return this.institutionRepository.save({
+        ...data,
+        userOwner: user,
+        users: [user],
+      });
+    } catch (err) {
+      throw new BadRequestException();
+    }
   }
 
-  findAll() {
-    return `This action returns all institution`;
+  async findAllByUser(userPaylaod: any) {
+    try {
+      const user = await this.userService.findOne(userPaylaod.id);
+      return user.institutions;
+    } catch (err) {
+      throw new BadRequestException();
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} institution`;
+  async update(
+    institutionId: string,
+    userPaylaod: any,
+    data: UpdateInstitutionDto,
+  ) {
+    return this.institutionRepository.update(institutionId, data);
   }
 
-  update(id: number, updateInstitutionDto: UpdateInstitutionDto) {
-    return `This action updates a #${id} institution`;
-  }
+  private async isOwner(id: string) {
+    const user = await this.userService.findOne(id);
 
-  remove(id: number) {
-    return `This action removes a #${id} institution`;
+    return !!(await this.institutionRepository.countBy({
+      userOwner: user,
+    }));
   }
 }

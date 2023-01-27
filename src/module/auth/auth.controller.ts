@@ -18,6 +18,8 @@ class AuthController {
   @UseGuards(AuthGuard('local'))
   @Post('login')
   async signin(@Req() req: Request) {
+    console.log('🚀 ~ req', req.user);
+
     return this.authService.login(req.user);
   }
 
