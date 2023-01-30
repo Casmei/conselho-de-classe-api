@@ -39,16 +39,16 @@ export class InstitutionController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    //todo: implementar uma busca de instituição
+    //TODO: implementar uma busca de instituição
   }
 
-  //todo: definir tipagem do meu req
+
   @Patch(':id')
   update(
     @Param('id') id: string,
     @Req() req: Request,
     @Body() data: UpdateInstitutionDto,
   ) {
-    return this.institutionService.update(id, req.user, data);
+      //TODO: implementar edição de instituição
   }
 }

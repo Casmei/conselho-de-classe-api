@@ -24,7 +24,7 @@ export class CouncilController {
   @ApiOperation({ summary: 'Cria um novo conselho no sistema' })
   @VerifyRole(userRoles.MANAGER)
   @Post()
-  //todo: tipar minha request
+  //TODO: tipar minha request
   create(@Body() createCouncilDto: CreateCouncilDto, @Request() req: any) {
     return this.councilService.create(createCouncilDto, req.user.sub);
   }

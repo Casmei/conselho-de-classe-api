@@ -17,9 +17,14 @@ export class InstitutionService {
     private readonly institutionRepository: Repository<Institution>,
     private userService: UserService,
   ) {}
-  //todo: tipar meu user
+  //TODO: tipar meu user
   async create(user: any, data: CreateInstitutionDto) {
     try {
+
+      if (await this.isOwner(user.id)) {
+        throw new BadRequestException();
+      }
+      
       return this.institutionRepository.save({
         ...data,
         userOwner: user,
@@ -48,10 +53,7 @@ export class InstitutionService {
   }
 
   private async isOwner(id: string) {
-    const user = await this.userService.findOne(id);
-
-    return !!(await this.institutionRepository.countBy({
-      userOwner: user,
-    }));
+    //TODO: aplicar estrategia de cache
+    return !!(await this.institutionRepository.findOneBy({userOwner: {id}}))
   }
 }
