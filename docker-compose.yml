@@ -1,0 +1,42 @@
+version: '3.9'
+
+services:
+
+  conselho:
+    build:
+      context: .
+      target: dependencies
+    env_file:
+      - .env
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    networks:
+      - db-network
+    depends_on:
+      - conselho-database
+    ports:
+      - ${BACKEND_PORT}:3000
+    command: npm run start:dev
+
+  conselho-database:
+    image: postgres:alpine
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - ./.docker/dbdata:/var/lib/postgresql/data/pgdata
+    networks:
+      - db-network
+
+  redis:
+    image: redis:alpine
+    networks:
+      - db-network
+    command: ["redis-server", "--bind", "0.0.0.0", "--port", "6379"]
+
+networks:
+  db-network:
+    driver: bridge
