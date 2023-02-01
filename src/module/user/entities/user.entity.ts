@@ -3,7 +3,11 @@ import { Institution } from 'src/module/institution/entities/institution.entity'
 import { Subject } from 'src/module/subject/entities/subject.entity';
 import CustomBaseEntity from 'src/shared/entity/CustomBaseEntity';
 import { Column, Entity, JoinTable, ManyToMany } from 'typeorm';
-import { userRoles } from '../role.enum';
+import {
+  InvitationExtraData,
+  userRoles,
+  UserStatus,
+} from '../protocols/user.protocols';
 
 @Entity('users')
 export class User extends CustomBaseEntity {
@@ -23,6 +27,12 @@ export class User extends CustomBaseEntity {
   @JoinTable()
   subjects: Subject[];
 
+  @Column({ type: 'enum', enum: UserStatus, nullable: true })
+  status?: UserStatus;
+
+  @Column({ type: 'jsonb', nullable: true })
+  invitation_extra_data?: InvitationExtraData;
+
   @ManyToMany(() => Class, { cascade: true, onDelete: 'CASCADE' })
   @JoinTable()
   classes: Class[];
@@ -33,5 +43,5 @@ export class User extends CustomBaseEntity {
     lazy: true,
   })
   @JoinTable()
-  institutions: Institution[];
+  institutions?: Institution[];
 }

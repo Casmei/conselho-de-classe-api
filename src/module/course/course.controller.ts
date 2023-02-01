@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { VerifyRole } from '../auth/decorators/verify-role.decorator';
-import { userRoles } from '../user/role.enum';
+import { userRoles } from '../user/protocols/user.protocols';
 import { CourseService } from './course.service';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';

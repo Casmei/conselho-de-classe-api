@@ -13,8 +13,8 @@ import * as crypto from 'crypto';
 import { AuthLoginDTO } from '../auth/dto/auth-login.dto';
 import { AuthRegisterDTO } from '../auth/dto/auth-register.dto';
 import { CreateTeacherDto } from './dto/create-teacher.dto';
-import { userRoles } from './role.enum';
 import { TeacherLoginMailProducer } from './jobs/teacher-login-mail.producer';
+import { userRoles } from './protocols/user.protocols';
 
 @Injectable()
 export class UserService {
