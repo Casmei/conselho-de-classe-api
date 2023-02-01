@@ -3,11 +3,7 @@ import { Institution } from 'src/module/institution/entities/institution.entity'
 import { Subject } from 'src/module/subject/entities/subject.entity';
 import CustomBaseEntity from 'src/shared/entity/CustomBaseEntity';
 import { Column, Entity, JoinTable, ManyToMany } from 'typeorm';
-import {
-  InvitationExtraData,
-  userRoles,
-  UserStatus,
-} from '../protocols/user.protocols';
+import { userRoles } from '../protocols/user.protocols';
 
 @Entity('users')
 export class User extends CustomBaseEntity {
@@ -26,12 +22,6 @@ export class User extends CustomBaseEntity {
   @ManyToMany(() => Subject, { cascade: true, onDelete: 'CASCADE' })
   @JoinTable()
   subjects: Subject[];
-
-  @Column({ type: 'enum', enum: UserStatus, nullable: true })
-  status?: UserStatus;
-
-  @Column({ type: 'jsonb', nullable: true })
-  invitation_extra_data?: InvitationExtraData;
 
   @ManyToMany(() => Class, { cascade: true, onDelete: 'CASCADE' })
   @JoinTable()

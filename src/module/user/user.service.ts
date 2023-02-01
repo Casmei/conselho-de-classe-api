@@ -14,7 +14,7 @@ import { AuthLoginDTO } from '../auth/dto/auth-login.dto';
 import { AuthRegisterDTO } from '../auth/dto/auth-register.dto';
 import { CreateTeacherDto } from './dto/create-teacher.dto';
 import { TeacherLoginMailProducer } from './jobs/teacher-login-mail.producer';
-import { userRoles } from './protocols/user.protocols';
+import { userRoles, UserStatus } from './protocols/user.protocols';
 
 @Injectable()
 export class UserService {
@@ -26,7 +26,10 @@ export class UserService {
   async create(userCredentials: AuthRegisterDTO) {
     await this.existsEmail(userCredentials.email);
 
-    return await this.userRepository.save(userCredentials);
+    return await this.userRepository.save({
+      ...userCredentials,
+      status: UserStatus.ACTIVE,
+    });
   }
 
   async findAll() {
