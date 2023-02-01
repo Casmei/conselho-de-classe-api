@@ -10,7 +10,7 @@ export class Institution extends CustomBaseEntity {
   @ManyToMany(() => User, (user) => user.institutions)
   users: User[];
 
-  @OneToOne(() => User, {cascade: true, onDelete: 'CASCADE'})
+  @OneToOne(() => User, { cascade: true, onDelete: 'CASCADE' })
   @JoinColumn()
   userOwner: User;
 }

@@ -42,13 +42,12 @@ export class InstitutionController {
     //TODO: implementar uma busca de instituição
   }
 
-
   @Patch(':id')
   update(
     @Param('id') id: string,
     @Req() req: Request,
     @Body() data: UpdateInstitutionDto,
   ) {
-      //TODO: implementar edição de instituição
+    //TODO: implementar edição de instituição
   }
 }
