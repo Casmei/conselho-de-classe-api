@@ -39,15 +39,8 @@ export class UserService {
     try {
       return await this.userRepository.findOneBy({ id: String(id) });
     } catch (error) {
-      throw new HttpException(
-        {
-          status: HttpStatus.BAD_REQUEST,
-          error: 'an error was triggered when searching for the user',
-        },
-        HttpStatus.FORBIDDEN,
-        {
-          cause: error,
-        },
+      throw new BadRequestException(
+        'an error was triggered when searching for the user',
       );
     }
   }
