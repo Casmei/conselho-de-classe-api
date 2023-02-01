@@ -30,22 +30,17 @@ export class UserService {
   }
 
   async findAll() {
-    return await this.userRepository.find();
+    return await this.userRepository.find({
+      select: { id: true, name: true, email: true },
+    });
   }
 
   async findOne(id: string) {
     try {
-      return await this.userRepository.findBy({ id: String(id) });
+      return await this.userRepository.findOneBy({ id: String(id) });
     } catch (error) {
-      throw new HttpException(
-        {
-          status: HttpStatus.BAD_REQUEST,
-          error: 'an error was triggered when searching for the user',
-        },
-        HttpStatus.FORBIDDEN,
-        {
-          cause: error,
-        },
+      throw new BadRequestException(
+        'an error was triggered when searching for the user',
       );
     }
   }
