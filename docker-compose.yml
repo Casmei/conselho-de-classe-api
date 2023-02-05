@@ -31,6 +31,19 @@ services:
     networks:
       - db-network
 
+  phpmyadmin:
+    image: bitnami/phppgadmin
+    ports:
+      - 8002:80
+    environment:
+      - DATABASE_HOST=conselho-database
+      - DATABASE_PORT_NUMBER=5432
+      - DATABASE_SSL_MODE=false
+    networks:
+      - db-network
+    depends_on:
+      - conselho-database
+
   redis:
     image: redis:alpine
     networks:
