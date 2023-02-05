@@ -16,16 +16,18 @@ import { CreateTeacherDto } from './dto/create-teacher.dto';
 import { TeacherLoginMailProducer } from './jobs/teacher-login-mail.producer';
 import { userRoles, UserStatus } from './protocols/user.protocols';
 import { InviteUserDto } from './dto/invite-user.dto';
-import { InviteUserEntity } from './entities/invite-user.entity';
+import { InviteUser } from './entities/invite-user.entity';
+import { MailerService } from '@nestjs-modules/mailer';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-    @InjectRepository(InviteUserEntity)
-    private readonly inviteUserRespository: Repository<InviteUserEntity>,
+    @InjectRepository(InviteUser)
+    private readonly inviteUserRespository: Repository<InviteUser>,
     private readonly teacherLoginMailProducer: TeacherLoginMailProducer,
+    private readonly mailerService: MailerService,
   ) {}
 
   async create(userCredentials: AuthRegisterDTO) {
@@ -77,29 +79,37 @@ export class UserService {
       role: userRoles.TEACHER,
     });
 
-    this.teacherLoginMailProducer.sendMail({
-      name: user.name,
-      email: userCredentials.email,
-      password,
-    });
+    // this.teacherLoginMailProducer.sendMail({
+    //   name: user.name,
+    //   email: userCredentials.email,
+    //   password,
+    // });
 
     return this.userRepository.insert(user);
   }
 
   async inviteUser(data: InviteUserDto, instance_id: number, user_id: string) {
+    console.log('🚀 ~ data', data);
+
+    const code = crypto.randomUUID().slice(0, 6);
     await this.inviteUserRespository.save({
-      code: crypto.randomUUID().slice(0, 6),
+      code,
       instance: { id: instance_id },
-      inviting_user: { id: user_id },
+      owner_invite: { id: user_id },
+      invite_extra_data: {
+        userData: {
+          role: data.role,
+          classes: data.classes,
+          subjects: data.subjects,
+        },
+        status: UserStatus.INVITED,
+      },
     });
 
-    //TODO: disparo do email
-  }
-
-  async getUsersInvites(data: ) {
-    await this.inviteUserRespository.find({ where: {
-      invite_extra_data: {email}
-    } });
+    this.teacherLoginMailProducer.sendMail({
+      email: data.email,
+      code,
+    });
   }
 
   private async existsEmail(email: string) {

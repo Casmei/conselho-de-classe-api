@@ -8,3 +8,12 @@ export enum UserStatus {
   INVITED = 'invited',
   BLOCKED = 'blocked',
 }
+
+export type InviteExtraData = {
+  userData: {
+    role: userRoles;
+    subjects?: { id: string }[];
+    classes?: { id: string }[];
+  };
+  status: UserStatus;
+};

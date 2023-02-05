@@ -1,5 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsEmail, IsNotEmpty } from 'class-validator';
+import {
+  IsArray,
+  IsEmail,
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+} from 'class-validator';
+import { userRoles } from '../protocols/user.protocols';
 
 export class InviteUserDto {
   @ApiProperty({
@@ -10,10 +17,14 @@ export class InviteUserDto {
   @IsEmail()
   email: string;
 
+  @IsEnum(userRoles)
+  role: userRoles;
+
   @ApiProperty({
     description: 'Uma lista de disciplinas que o professor ensina',
     example: [{ id: 1 }, { id: 2 }],
   })
+  @IsOptional()
   @IsArray()
   subjects?: { id: string }[];
 
@@ -21,6 +32,7 @@ export class InviteUserDto {
     description: 'Uma lista de salas que o professor lessiona',
     example: [{ id: 1 }, { id: 2 }],
   })
+  @IsOptional()
   @IsArray()
   classes?: { id: string }[];
 }

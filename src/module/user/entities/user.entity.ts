@@ -2,8 +2,16 @@ import { Class } from 'src/module/class/entities/class.entity';
 import { Instance } from 'src/module/instance/entities/instance.entity';
 import { Subject } from 'src/module/subject/entities/subject.entity';
 import CustomBaseEntity from 'src/shared/entity/CustomBaseEntity';
-import { Column, Entity, JoinTable, ManyToMany } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 import { userRoles } from '../protocols/user.protocols';
+import { InviteUser } from './invite-user.entity';
 
 @Entity('users')
 export class User extends CustomBaseEntity {
@@ -34,4 +42,7 @@ export class User extends CustomBaseEntity {
   })
   @JoinTable()
   instances?: Instance[];
+
+  @OneToMany(() => InviteUser, (invite) => invite.owner_invite)
+  invites: InviteUser[];
 }

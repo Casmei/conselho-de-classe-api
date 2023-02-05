@@ -35,7 +35,7 @@ export class UserController {
   @Post('/invite/:instance_id')
   inviteUser(
     @Body() data: InviteUserDto,
-    @Param('instance_id') instance_id,
+    @Param('instance_id') instance_id: number,
     @Req() req: any,
   ) {
     return this.userService.inviteUser(data, +instance_id, req.user.id);

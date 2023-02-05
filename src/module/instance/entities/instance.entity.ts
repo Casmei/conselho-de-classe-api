@@ -1,3 +1,4 @@
+import { InviteUser } from 'src/module/user/entities/invite-user.entity';
 import { User } from 'src/module/user/entities/user.entity';
 import {
   Column,
@@ -6,6 +7,8 @@ import {
   Entity,
   JoinColumn,
   ManyToMany,
+  ManyToOne,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -25,6 +28,9 @@ export class Instance {
   @OneToOne(() => User, { cascade: true, onDelete: 'CASCADE' })
   @JoinColumn()
   userOwner: User;
+
+  @OneToMany(() => InviteUser, (invite) => invite.instance)
+  invites: InviteUser[];
 
   @CreateDateColumn()
   createdAt: Date;
