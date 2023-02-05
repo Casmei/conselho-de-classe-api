@@ -32,13 +32,13 @@ services:
       - db-network
 
   phpmyadmin:
-    image: bitnami/phppgadmin
+    image: adminer
     ports:
-      - 8002:80
+      - 8080:8080
     environment:
       - DATABASE_HOST=conselho-database
       - DATABASE_PORT_NUMBER=5432
-      - DATABASE_SSL_MODE=false
+      - DATABASE_SSL_MODE=disable
     networks:
       - db-network
     depends_on:

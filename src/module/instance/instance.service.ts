@@ -1,31 +1,26 @@
-import {
-  BadRequestException,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserService } from '../user/user.service';
-import { CreateInstitutionDto } from './dto/create-institution.dto';
-import { UpdateInstitutionDto } from './dto/update-institution.dto';
-import { Institution } from './entities/institution.entity';
+import { CreateInstanceDto } from './dto/create-instance.dto';
+import { UpdateInstanceDto } from './dto/update-instance.dto';
+import { Instance } from './entities/instance.entity';
 
 @Injectable()
-export class InstitutionService {
+export class InstanceService {
   constructor(
-    @InjectRepository(Institution)
-    private readonly institutionRepository: Repository<Institution>,
+    @InjectRepository(Instance)
+    private readonly instanceRepository: Repository<Instance>,
     private userService: UserService,
   ) {}
   //TODO: tipar meu user
-  async create(user: any, data: CreateInstitutionDto) {
+  async create(user: any, data: CreateInstanceDto) {
     try {
-
       if (await this.isOwner(user.id)) {
         throw new BadRequestException();
       }
-      
-      return this.institutionRepository.save({
+
+      return this.instanceRepository.save({
         ...data,
         userOwner: user,
         users: [user],
@@ -38,7 +33,7 @@ export class InstitutionService {
   async findAllByUser(userPaylaod: any) {
     try {
       const user = await this.userService.findOne(userPaylaod.id);
-      return user.institutions;
+      return user.instances;
     } catch (err) {
       throw new BadRequestException();
     }
@@ -47,13 +42,13 @@ export class InstitutionService {
   async update(
     institutionId: string,
     userPaylaod: any,
-    data: UpdateInstitutionDto,
+    data: UpdateInstanceDto,
   ) {
-    return this.institutionRepository.update(institutionId, data);
+    return this.instanceRepository.update(institutionId, data);
   }
 
   private async isOwner(id: string) {
     //TODO: aplicar estrategia de cache
-    return !!(await this.institutionRepository.findOneBy({userOwner: {id}}))
+    return !!(await this.instanceRepository.findOneBy({ userOwner: { id } }));
   }
 }

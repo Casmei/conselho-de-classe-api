@@ -1,15 +1,9 @@
-import {
-  BadRequestException,
-  Body,
-  Controller,
-  Get,
-  Param,
-  Post,
-} from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Req } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { VerifyRole } from '../auth/decorators/verify-role.decorator';
 import { CreateTeacherDto } from './dto/create-teacher.dto';
-import { userRoles } from './role.enum';
+import { InviteUserDto } from './dto/invite-user.dto';
+import { userRoles } from './protocols/user.protocols';
 import { UserService } from './user.service';
 
 @ApiBearerAuth()
@@ -34,10 +28,16 @@ export class UserController {
   @VerifyRole(userRoles.MANAGER)
   @Post('teacher')
   createTeacher(@Body() data: CreateTeacherDto) {
-    try {
-      return this.userService.createTeacher(data);
-    } catch (error) {
-      throw new BadRequestException();
-    }
+    return this.userService.createTeacher(data);
+  }
+
+  @VerifyRole(userRoles.MANAGER)
+  @Post('/invite/:instance_id')
+  inviteUser(
+    @Body() data: InviteUserDto,
+    @Param('instance_id') instance_id: number,
+    @Req() req: any,
+  ) {
+    return this.userService.inviteUser(data, +instance_id, req.user.id);
   }
 }
