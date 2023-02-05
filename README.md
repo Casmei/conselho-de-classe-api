@@ -1,43 +1,31 @@
-## Descrição
+![Logo](github-images/conselho.png)
 
-Sistema de conselho de classe desenvolvido para o IFNMG - Almenara
+Projeto desenvolvido como avaliação ao pedido de proeficiencia na disciplina de desenvolvimento web. Sua proposta é 
+Este projeto é um sistema de gerenciamento de conselhos de classe que permite aos professores fazer anotações sobre seus alunos. No dia do conselho, essas anotações podem ser consultadas, o que facilita o processo de avaliação e discussão sobre o desempenho dos alunos.
+
 
 ## Instalação
 
+Primeiramente clone este repositório
+
 ```bash
-$ npm install
-$ cp .env.example .env
+  git clone https://github.com/Casmei/conselho-classe-ifnmg
+  cd conselho-classe-ifnmg
 ```
 
-## Iniciando a aplicação
+Dentro da pasta do projeto, clone as variáveis de ambiente 
+```bash
+  cp .env.example .env
+```
+
+Por fim, inicie a aplicação utilizando o docker e pronto!
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+  docker compose up --build
 ```
 ## Documentação
-Acesse o [link](http://localhost:3033/docs) com a aplicação rodando.
+Para documentar a aplicação, foi utilizado o [Swagger](https://docs.nestjs.com/openapi/introduction), para acessar, inicie o projeto e entre nesse [link](http://localhost:3033/docs)
+## Stack utilizada
 
+**Back-end:** Typescript, Nest.js, TypeORM, NodeMailer, Redis
 
-## Teste
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
-
-## Licença
-
-[MIT licensed](LICENSE).

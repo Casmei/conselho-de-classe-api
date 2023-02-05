@@ -10,6 +10,6 @@ export class StudentController {
 
   @Post('upload')
   uploadFile() {
-    //todo: fazer sistema de upload de arquivo bem como o crud do aluno
+    //TODO: fazer sistema de upload de arquivo bem como o crud do aluno
   }
 }

@@ -11,8 +11,8 @@ import { SubjectService } from './subject.service';
 import { CreateSubjectDto } from './dto/create-subject.dto';
 import { UpdateSubjectDto } from './dto/update-subject.dto';
 import { VerifyRole } from '../auth/decorators/verify-role.decorator';
-import { userRoles } from '../user/role.enum';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { userRoles } from '../user/protocols/user.protocols';
 
 @ApiBearerAuth()
 @ApiTags('Disciplina')

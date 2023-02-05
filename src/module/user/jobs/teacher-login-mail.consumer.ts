@@ -7,7 +7,7 @@ import { AuthRegisterDTO } from 'src/module/auth/dto/auth-register.dto';
 export class TeacherLoginMailConsumer {
   constructor(private readonly mailerService: MailerService) {}
   @Process('send-mail')
-  async sendMail(job: Job<AuthRegisterDTO>) {
+  async sendMail(job: Job<{ email: string; code: string }>) {
     this.mailerService
       .sendMail({
         to: job.data.email,
@@ -17,9 +17,8 @@ export class TeacherLoginMailConsumer {
       <!DOCTYPE html>
       <html>
         <body>
-          <h1>Cadastro realizado com sucesso ${job.data.name} 🎉</h1>
-          <p>Sua nova senha é: <strong>${job.data.password}</strong></p>
-          <p>Recomendamos que você altere essa senha assim que fizer login.</p>
+          <h1>Você foi convidado para participar de uma instituição 🎉</h1>
+          <p>Entre nesse link para entrar: http://localhost:3033/invite/${job.data.code}
         </body>
       </html>
       `,

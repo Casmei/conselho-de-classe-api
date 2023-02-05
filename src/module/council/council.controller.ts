@@ -12,8 +12,8 @@ import { CouncilService } from './council.service';
 import { CreateCouncilDto } from './dto/create-council.dto';
 import { UpdateCouncilDto } from './dto/update-council.dto';
 import { VerifyRole } from '../auth/decorators/verify-role.decorator';
-import { userRoles } from '../user/role.enum';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { userRoles } from '../user/protocols/user.protocols';
 
 @ApiBearerAuth()
 @ApiTags('Conselho de Classe')
@@ -24,7 +24,7 @@ export class CouncilController {
   @ApiOperation({ summary: 'Cria um novo conselho no sistema' })
   @VerifyRole(userRoles.MANAGER)
   @Post()
-  //todo: tipar minha request
+  //TODO: tipar minha request
   create(@Body() createCouncilDto: CreateCouncilDto, @Request() req: any) {
     return this.councilService.create(createCouncilDto, req.user.sub);
   }

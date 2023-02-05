@@ -16,6 +16,7 @@ import { typeOrmConfigAsync } from './config/database.config';
 import { mailConfigAsync } from './config/mail.config';
 import { bullConfigAsync } from './config/queue.config';
 import RoleGuard from './module/auth/guards/role.guard';
+import { InstanceModule } from './module/instance/instance.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import RoleGuard from './module/auth/guards/role.guard';
     ClassModule,
     SubjectModule,
     StudentModule,
+    InstanceModule,
   ],
   controllers: [],
   providers: [

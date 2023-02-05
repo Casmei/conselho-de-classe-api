@@ -16,8 +16,7 @@ class AuthService {
   }
 
   async createUserAccount(credentials: AuthRegisterDTO) {
-    //todo: Não seria interessante a gente verificar a existencia do email aqui?!
-
+    //TODO: Não seria interessante a gente verificar a existencia do email aqui?!
     credentials.password = await bcrypt.hash(credentials.password, 10);
     return await this.userService.create(credentials);
   }
