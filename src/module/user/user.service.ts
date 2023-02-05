@@ -15,11 +15,16 @@ import { AuthRegisterDTO } from '../auth/dto/auth-register.dto';
 import { CreateTeacherDto } from './dto/create-teacher.dto';
 import { TeacherLoginMailProducer } from './jobs/teacher-login-mail.producer';
 import { userRoles, UserStatus } from './protocols/user.protocols';
+import { InviteUserDto } from './dto/invite-user.dto';
+import { InviteUserEntity } from './entities/invite-user.entity';
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(User) private readonly userRepository: Repository<User>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+    @InjectRepository(InviteUserEntity)
+    private readonly inviteUserRespository: Repository<InviteUserEntity>,
     private readonly teacherLoginMailProducer: TeacherLoginMailProducer,
   ) {}
 
@@ -81,13 +86,29 @@ export class UserService {
     return this.userRepository.insert(user);
   }
 
+  async inviteUser(data: InviteUserDto, instance_id: number, user_id: string) {
+    await this.inviteUserRespository.save({
+      code: crypto.randomUUID().slice(0, 6),
+      instance: { id: instance_id },
+      inviting_user: { id: user_id },
+    });
+
+    //TODO: disparo do email
+  }
+
+  async getUsersInvites(data: ) {
+    await this.inviteUserRespository.find({ where: {
+      invite_extra_data: {email}
+    } });
+  }
+
   private async existsEmail(email: string) {
     const user = await this.userRepository.countBy({
       email,
     });
 
     if (!!user) {
-      throw new BadRequestException('Already existing email');
+      throw new BadRequestException('invalid email');
     }
   }
 }

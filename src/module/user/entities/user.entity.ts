@@ -1,5 +1,5 @@
 import { Class } from 'src/module/class/entities/class.entity';
-import { Institution } from 'src/module/institution/entities/institution.entity';
+import { Instance } from 'src/module/instance/entities/instance.entity';
 import { Subject } from 'src/module/subject/entities/subject.entity';
 import CustomBaseEntity from 'src/shared/entity/CustomBaseEntity';
 import { Column, Entity, JoinTable, ManyToMany } from 'typeorm';
@@ -27,11 +27,11 @@ export class User extends CustomBaseEntity {
   @JoinTable()
   classes: Class[];
 
-  @ManyToMany(() => Institution, (institution) => institution.users, {
+  @ManyToMany(() => Instance, (instance) => instance.users, {
     cascade: true,
     onDelete: 'CASCADE',
     lazy: true,
   })
   @JoinTable()
-  institutions?: Institution[];
+  instances?: Instance[];
 }
