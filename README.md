@@ -1,7 +1,6 @@
 ![Logo](github-images/conselho.png)
 
-Projeto desenvolvido como avaliação ao pedido de proeficiencia na disciplina de desenvolvimento web. Sua proposta é 
-Este projeto é um sistema de gerenciamento de conselhos de classe que permite aos professores fazer anotações sobre seus alunos. No dia do conselho, essas anotações podem ser consultadas, o que facilita o processo de avaliação e discussão sobre o desempenho dos alunos.
+Projeto desenvolvido como avaliação ao pedido de proeficiencia na disciplina de desenvolvimento web. Este projeto é um sistema de gerenciamento de conselhos de classe que permite aos professores fazer anotações sobre seus alunos. No dia do conselho, essas anotações podem ser consultadas, o que facilita o processo de avaliação e discussão sobre o desempenho dos alunos.
 
 
 ## Instalação
