@@ -16,13 +16,12 @@ class AuthService {
   }
 
   async createUserAccount(credentials: AuthRegisterDTO) {
-    //TODO: Não seria interessante a gente verificar a existencia do email aqui?!
     credentials.password = await bcrypt.hash(credentials.password, 10);
     return await this.userService.create(credentials);
   }
 
   async login(user: any) {
-    const payload = { username: user.name, sub: user.id, role: user.role };
+    const payload = { username: user.name, sub: user.id };
     return {
       access_token: this.jwtService.sign(payload),
     };

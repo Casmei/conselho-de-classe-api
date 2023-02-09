@@ -12,12 +12,9 @@ import * as crypto from 'crypto';
 
 import { AuthLoginDTO } from '../auth/dto/auth-login.dto';
 import { AuthRegisterDTO } from '../auth/dto/auth-register.dto';
-import { CreateTeacherDto } from './dto/create-teacher.dto';
-import { TeacherLoginMailProducer } from './jobs/teacher-login-mail.producer';
-import { userRoles, UserStatus } from './protocols/user.protocols';
+import { UserStatus } from './protocols/user.protocols';
 import { InviteUserDto } from './dto/invite-user.dto';
 import { InviteUser } from './entities/invite-user.entity';
-import { MailerService } from '@nestjs-modules/mailer';
 
 @Injectable()
 export class UserService {
@@ -26,8 +23,6 @@ export class UserService {
     private readonly userRepository: Repository<User>,
     @InjectRepository(InviteUser)
     private readonly inviteUserRespository: Repository<InviteUser>,
-    private readonly teacherLoginMailProducer: TeacherLoginMailProducer,
-    private readonly mailerService: MailerService,
   ) {}
 
   async create(userCredentials: AuthRegisterDTO) {
@@ -67,30 +62,7 @@ export class UserService {
     return undefined;
   }
 
-  async createTeacher(userCredentials: CreateTeacherDto) {
-    await this.existsEmail(userCredentials.email);
-
-    const password = crypto.randomUUID().slice(0, 6);
-    const hashedPassword = bcrypt.hashSync(password, 10);
-
-    const user = this.userRepository.create({
-      ...userCredentials,
-      password: hashedPassword,
-      role: userRoles.TEACHER,
-    });
-
-    // this.teacherLoginMailProducer.sendMail({
-    //   name: user.name,
-    //   email: userCredentials.email,
-    //   password,
-    // });
-
-    return this.userRepository.insert(user);
-  }
-
   async inviteUser(data: InviteUserDto, instance_id: number, user_id: string) {
-    console.log('🚀 ~ data', data);
-
     const code = crypto.randomUUID().slice(0, 6);
     await this.inviteUserRespository.save({
       code,
@@ -98,6 +70,7 @@ export class UserService {
       owner_invite: { id: user_id },
       invite_extra_data: {
         userData: {
+          email: data.email,
           role: data.role,
           classes: data.classes,
           subjects: data.subjects,
@@ -106,9 +79,13 @@ export class UserService {
       },
     });
 
-    this.teacherLoginMailProducer.sendMail({
-      email: data.email,
-      code,
+    return { link: `http://localhost:3033/invite/${code}` };
+  }
+
+  async findInviteByCode(code: string) {
+    return this.inviteUserRespository.findOne({
+      where: { code },
+      relations: { instance: true },
     });
   }
 

@@ -13,6 +13,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { UserToInstance } from './UserToInstance.entity';
 
 @Entity()
 export class Instance {
@@ -22,8 +23,8 @@ export class Instance {
   @Column()
   name: string;
 
-  @ManyToMany(() => User, (user) => user.instances)
-  users: User[];
+  @OneToMany(() => UserToInstance, (userToInstance) => userToInstance.instance)
+  userToInstance: UserToInstance[];
 
   @OneToOne(() => User, { cascade: true, onDelete: 'CASCADE' })
   @JoinColumn()
