@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Param, Post, Req } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { SkipJwt } from '../auth/decorators/skip-jwt.decorator';
 import { VerifyRole } from '../auth/decorators/verify-role.decorator';
 import { CreateTeacherDto } from './dto/create-teacher.dto';
 import { InviteUserDto } from './dto/invite-user.dto';
@@ -24,12 +25,12 @@ export class UserController {
     return this.userService.findOne(id);
   }
 
-  @ApiOperation({ summary: 'Cria conta para um professor' })
-  @VerifyRole(userRoles.MANAGER)
-  @Post('teacher')
-  createTeacher(@Body() data: CreateTeacherDto) {
-    return this.userService.createTeacher(data);
-  }
+  // @ApiOperation({ summary: 'Cria conta para um professor' })
+  // @VerifyRole(userRoles.MANAGER)
+  // @Post('teacher')
+  // createTeacher(@Body() data: CreateTeacherDto) {
+  //   return this.userService.createTeacher(data);
+  // }
 
   @VerifyRole(userRoles.MANAGER)
   @Post('/invite/:instance_id')

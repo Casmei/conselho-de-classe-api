@@ -12,6 +12,7 @@ export enum UserStatus {
 export type InviteExtraData = {
   userData: {
     role: userRoles;
+    email: string;
     subjects?: { id: string }[];
     classes?: { id: string }[];
   };
