@@ -6,7 +6,7 @@ import {
   IsNotEmpty,
   IsOptional,
 } from 'class-validator';
-import { userRoles } from '../protocols/user.protocols';
+import { userRoles } from '../../user/protocols/user.protocols';
 
 export class InviteUserDto {
   @ApiProperty({

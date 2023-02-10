@@ -1,7 +1,7 @@
+import { InstanceInvite } from 'src/module/instance/entities/instance-invite.entity';
 import { UserToInstance } from 'src/module/instance/entities/UserToInstance.entity';
 import CustomBaseEntity from 'src/shared/entity/CustomBaseEntity';
 import { Column, Entity, OneToMany } from 'typeorm';
-import { InviteUser } from './invite-user.entity';
 
 @Entity('users')
 export class User extends CustomBaseEntity {
@@ -17,6 +17,6 @@ export class User extends CustomBaseEntity {
   @OneToMany(() => UserToInstance, (userToInstance) => userToInstance.user)
   userToInstance: UserToInstance[];
 
-  @OneToMany(() => InviteUser, (invite) => invite.owner_invite)
-  invites: InviteUser[];
+  @OneToMany(() => InstanceInvite, (invite) => invite.owner_invite)
+  invites: InstanceInvite[];
 }

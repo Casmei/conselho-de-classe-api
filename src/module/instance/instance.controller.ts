@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Req } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
+import { InviteUserDto } from './dto/invite-user.dto';
 import { CreateInstanceDto } from './dto/create-instance.dto';
 import { InstanceService } from './instance.service';
 
@@ -28,5 +29,14 @@ export class InstanceController {
   @Post('/invite/:code')
   enterByCode(@Param('code') code: string, @Req() req) {
     return this.instanceService.joinInstanceByCode(code, req.user);
+  }
+
+  @Post(':instance_id/invite')
+  inviteUser(
+    @Body() data: InviteUserDto,
+    @Param('instance_id') instance_id: number,
+    @Req() req: any,
+  ) {
+    return this.instanceService.inviteUser(data, +instance_id, req.user.id);
   }
 }

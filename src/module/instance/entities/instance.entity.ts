@@ -1,4 +1,3 @@
-import { InviteUser } from 'src/module/user/entities/invite-user.entity';
 import { User } from 'src/module/user/entities/user.entity';
 import {
   Column,
@@ -6,13 +5,12 @@ import {
   DeleteDateColumn,
   Entity,
   JoinColumn,
-  ManyToMany,
-  ManyToOne,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { InstanceInvite } from './instance-invite.entity';
 import { UserToInstance } from './UserToInstance.entity';
 
 @Entity()
@@ -30,8 +28,8 @@ export class Instance {
   @JoinColumn()
   userOwner: User;
 
-  @OneToMany(() => InviteUser, (invite) => invite.instance)
-  invites: InviteUser[];
+  @OneToMany(() => InstanceInvite, (invite) => invite.instance)
+  invites: InstanceInvite[];
 
   @CreateDateColumn()
   createdAt: Date;
