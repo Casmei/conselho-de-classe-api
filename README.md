@@ -27,4 +27,3 @@ Para documentar a aplicação, foi utilizado o [Swagger](https://docs.nestjs.com
 ## Stack utilizada
 
 **Back-end:** Typescript, Nest.js, TypeORM, NodeMailer, Redis
-
