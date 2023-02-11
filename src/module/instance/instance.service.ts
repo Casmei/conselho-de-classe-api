@@ -114,26 +114,6 @@ export class InstanceService {
 
   async joinInstanceByCode(code: string, user: any) {
     const invite = await this.findInviteByCode(code);
-
-    if (!invite) {
-      throw new BadRequestException('Invitation not found');
-    }
-
-    if (user.email == invite.owner_invite.email) {
-      throw new UnauthorizedException(
-        'The owner of the instance cannot join it through an invite',
-      );
-    }
-
-    if (
-      invite.invite_extra_data.userData.email !== user.email ||
-      invite.invite_extra_data.status !== UserStatus.INVITED
-    ) {
-      throw new UnauthorizedException(
-        'You are not authorized to use this invitation',
-      );
-    }
-
     const instance = await this.instanceRepository.findOne({
       where: {
         id: invite.instance.id,
@@ -142,17 +122,6 @@ export class InstanceService {
         userToInstance: { user: true },
       },
     });
-
-    const alreadyBelongsToInstance = instance.userToInstance.find(
-      (userToInstance) =>
-        userToInstance.user.email === invite.invite_extra_data.userData.email,
-    );
-
-    if (alreadyBelongsToInstance) {
-      throw new UnauthorizedException(
-        'You are not authorized to use this invitation',
-      );
-    }
 
     this.instanceInviteRespository.update(invite.id, {
       ...invite,

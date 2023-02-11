@@ -1,9 +1,19 @@
-import { Controller, Get, Post, Body, Patch, Param, Req } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 import { InviteUserDto } from './dto/invite-user.dto';
 import { CreateInstanceDto } from './dto/create-instance.dto';
 import { InstanceService } from './instance.service';
+import { InviteGuard } from './guard/invite.guard';
 
 @ApiTags('Instituição')
 @Controller('institution')
@@ -25,9 +35,10 @@ export class InstanceController {
     return this.instanceService.findAllByUser(req.user);
   }
 
+  @UseGuards(InviteGuard)
   @ApiBearerAuth()
   @Post('/invite/:code')
-  enterByCode(@Param('code') code: string, @Req() req) {
+  enterByCode(@Param('code') code: string, @Req() req: any) {
     return this.instanceService.joinInstanceByCode(code, req.user);
   }
 
