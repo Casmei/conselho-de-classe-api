@@ -1,15 +1,11 @@
-import {
-  BadRequestException,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { InviteUserDto } from './dto/invite-user.dto';
 import { UserStatus } from '../user/protocols/user.protocols';
 import { CreateInstanceDto } from './dto/create-instance.dto';
 import { Instance } from './entities/instance.entity';
-import { UserToInstance } from './entities/UserToInstance.entity';
+import { UserToInstance } from './entities/user-to-instance.entity';
 import * as crypto from 'crypto';
 import { InstanceInvite } from './entities/instance-invite.entity';
 
@@ -147,5 +143,21 @@ export class InstanceService {
 
   private async existsInstance(id: number) {
     return this.instanceRepository.countBy({ id });
+  }
+
+  async userBelongsToInstance(instanceId: number, userId: string) {
+    const instance = await this.instanceRepository.findOne({
+      where: { id: instanceId },
+      relations: { userToInstance: true },
+    });
+
+    if (instance) {
+      const users = instance.userToInstance.map(
+        (userToInstance) => userToInstance.user.id,
+      );
+      return users.includes(userId);
+    } else {
+      return false;
+    }
   }
 }

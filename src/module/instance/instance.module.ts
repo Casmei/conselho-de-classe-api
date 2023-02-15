@@ -4,7 +4,7 @@ import { Instance } from './entities/instance.entity';
 import { UserModule } from '../user/user.module';
 import { InstanceController } from './instance.controller';
 import { InstanceService } from './instance.service';
-import { UserToInstance } from './entities/UserToInstance.entity';
+import { UserToInstance } from './entities/user-to-instance.entity';
 import { InstanceInvite } from './entities/instance-invite.entity';
 
 @Module({
@@ -14,5 +14,6 @@ import { InstanceInvite } from './entities/instance-invite.entity';
   ],
   controllers: [InstanceController],
   providers: [InstanceService],
+  exports: [InstanceService],
 })
 export class InstanceModule {}

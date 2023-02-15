@@ -21,7 +21,7 @@ export default class RoleGuard implements CanActivate {
     //   console.log('🚀 ~ params', params);
     //   return true;
     // }
-
+    // pODER USAR O ROLE GUARD QUANDO TRABALHAR NO CONTEXTO DA INSTITUIÇÃO
     return true;
   }
 }

@@ -1,5 +1,5 @@
 import { InstanceInvite } from 'src/module/instance/entities/instance-invite.entity';
-import { UserToInstance } from 'src/module/instance/entities/UserToInstance.entity';
+import { UserToInstance } from 'src/module/instance/entities/user-to-instance.entity';
 import CustomBaseEntity from 'src/shared/entity/CustomBaseEntity';
 import { Column, Entity, OneToMany } from 'typeorm';
 
