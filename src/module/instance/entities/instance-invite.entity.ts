@@ -1,11 +1,11 @@
 import { Instance } from 'src/module/instance/entities/instance.entity';
 import CustomBaseEntity from 'src/shared/entity/CustomBaseEntity';
 import { Column, Entity, ManyToOne } from 'typeorm';
-import { InviteExtraData } from '../protocols/user.protocols';
-import { User } from './user.entity';
+import { InviteExtraData } from '../../user/protocols/user.protocols';
+import { User } from '../../user/entities/user.entity';
 
 @Entity()
-export class InviteUser extends CustomBaseEntity {
+export class InstanceInvite extends CustomBaseEntity {
   @Column()
   code: string;
   @ManyToOne(() => User, (user) => user.invites)

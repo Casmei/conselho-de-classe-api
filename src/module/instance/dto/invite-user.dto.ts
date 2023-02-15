@@ -6,7 +6,7 @@ import {
   IsNotEmpty,
   IsOptional,
 } from 'class-validator';
-import { userRoles } from '../protocols/user.protocols';
+import { userRoles } from '../../user/protocols/user.protocols';
 
 export class InviteUserDto {
   @ApiProperty({
@@ -25,7 +25,6 @@ export class InviteUserDto {
     example: [{ id: 1 }, { id: 2 }],
   })
   @IsOptional()
-  @IsArray()
   subjects?: { id: string }[];
 
   @ApiProperty({
@@ -33,6 +32,5 @@ export class InviteUserDto {
     example: [{ id: 1 }, { id: 2 }],
   })
   @IsOptional()
-  @IsArray()
   classes?: { id: string }[];
 }

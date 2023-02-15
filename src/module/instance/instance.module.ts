@@ -4,10 +4,16 @@ import { Instance } from './entities/instance.entity';
 import { UserModule } from '../user/user.module';
 import { InstanceController } from './instance.controller';
 import { InstanceService } from './instance.service';
+import { UserToInstance } from './entities/user-to-instance.entity';
+import { InstanceInvite } from './entities/instance-invite.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Instance]), UserModule],
+  imports: [
+    TypeOrmModule.forFeature([Instance, UserToInstance, InstanceInvite]),
+    UserModule,
+  ],
   controllers: [InstanceController],
   providers: [InstanceService],
+  exports: [InstanceService],
 })
 export class InstanceModule {}

@@ -1,17 +1,7 @@
-import { Class } from 'src/module/class/entities/class.entity';
-import { Instance } from 'src/module/instance/entities/instance.entity';
-import { Subject } from 'src/module/subject/entities/subject.entity';
+import { InstanceInvite } from 'src/module/instance/entities/instance-invite.entity';
+import { UserToInstance } from 'src/module/instance/entities/user-to-instance.entity';
 import CustomBaseEntity from 'src/shared/entity/CustomBaseEntity';
-import {
-  Column,
-  Entity,
-  JoinTable,
-  ManyToMany,
-  ManyToOne,
-  OneToMany,
-} from 'typeorm';
-import { userRoles } from '../protocols/user.protocols';
-import { InviteUser } from './invite-user.entity';
+import { Column, Entity, OneToMany } from 'typeorm';
 
 @Entity('users')
 export class User extends CustomBaseEntity {
@@ -24,25 +14,9 @@ export class User extends CustomBaseEntity {
   @Column()
   password: string;
 
-  @Column({ type: 'enum', enum: userRoles, default: userRoles.MANAGER })
-  role: userRoles;
+  @OneToMany(() => UserToInstance, (userToInstance) => userToInstance.user)
+  userToInstance: UserToInstance[];
 
-  @ManyToMany(() => Subject, { cascade: true, onDelete: 'CASCADE' })
-  @JoinTable()
-  subjects: Subject[];
-
-  @ManyToMany(() => Class, { cascade: true, onDelete: 'CASCADE' })
-  @JoinTable()
-  classes: Class[];
-
-  @ManyToMany(() => Instance, (instance) => instance.users, {
-    cascade: true,
-    onDelete: 'CASCADE',
-    lazy: true,
-  })
-  @JoinTable()
-  instances?: Instance[];
-
-  @OneToMany(() => InviteUser, (invite) => invite.owner_invite)
-  invites: InviteUser[];
+  @OneToMany(() => InstanceInvite, (invite) => invite.owner_invite)
+  invites: InstanceInvite[];
 }

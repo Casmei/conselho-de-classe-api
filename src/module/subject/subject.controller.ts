@@ -6,6 +6,9 @@ import {
   Patch,
   Param,
   Delete,
+  ParseIntPipe,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
 import { SubjectService } from './subject.service';
 import { CreateSubjectDto } from './dto/create-subject.dto';
@@ -13,45 +16,55 @@ import { UpdateSubjectDto } from './dto/update-subject.dto';
 import { VerifyRole } from '../auth/decorators/verify-role.decorator';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { userRoles } from '../user/protocols/user.protocols';
+import { UserBelongsToIntance } from '../instance/guard/user-belongs-to-instance.guard';
 
 @ApiBearerAuth()
 @ApiTags('Disciplina')
-@Controller('subject')
+@Controller('instance')
 export class SubjectController {
   constructor(private readonly subjectService: SubjectService) {}
 
   @ApiOperation({ summary: 'Cria uma nova disciplina' })
   @VerifyRole(userRoles.MANAGER)
-  @Post()
-  create(@Body() data: CreateSubjectDto) {
-    return this.subjectService.create(data);
+  @UseGuards(UserBelongsToIntance)
+  @Post(':instance_id/subject')
+  create(
+    @Body() data: CreateSubjectDto,
+    @Param('instance_id', ParseIntPipe) instanceId,
+  ) {
+    return this.subjectService.create(instanceId, data);
   }
 
   @ApiOperation({ summary: 'Retorna todas as disciplinas' })
   @VerifyRole(userRoles.MANAGER)
-  @Get()
-  findAll() {
-    return this.subjectService.findAll();
+  @UseGuards(UserBelongsToIntance)
+  @Get(':instance_id/subject')
+  findAll(@Param('instance_id', ParseIntPipe) instanceId) {
+    return this.subjectService.findAll(instanceId);
   }
 
   @ApiOperation({ summary: 'Retorna uma disciplina pelo id' })
   @VerifyRole(userRoles.MANAGER)
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.subjectService.findOne(id);
+  @Get(':instance_id/subject/:id')
+  findOne(@Param() param: { id: string; instance_id: number }) {
+    //TODO: tratar o UUID
+    return this.subjectService.findOne(+param.instance_id, param.id);
   }
 
   @ApiOperation({ summary: 'Atualiza uma disciplina pelo id' })
   @VerifyRole(userRoles.MANAGER)
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() data: UpdateSubjectDto) {
-    return this.subjectService.update(id, data);
+  @Patch(':instance_id/subject/:id')
+  update(
+    @Param() param: { id: string; instanceId: number },
+    @Body() data: UpdateSubjectDto,
+  ) {
+    return this.subjectService.update(+param.instanceId, param.id, data);
   }
 
   @ApiOperation({ summary: 'Deleta uma disciplina pelo id' })
   @VerifyRole(userRoles.MANAGER)
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.subjectService.remove(id);
+  @Delete(':instance_id/subject/:id')
+  remove(@Param() param: { id: string; instanceId: number }) {
+    return this.subjectService.remove(+param.instanceId, param.id);
   }
 }
