@@ -1,3 +1,4 @@
+import { ClassToInstance } from 'src/module/class/entities/class-to-instance.entity';
 import { SubjectToInstance } from 'src/module/subject/entities/subject-to-instance.entity';
 import { User } from 'src/module/user/entities/user.entity';
 import { CustomBaseDateEntity } from 'src/shared/entity/CustomBaseEntity';
@@ -37,4 +38,10 @@ export class Instance extends CustomBaseDateEntity {
     (subjectToInstance) => subjectToInstance.instance,
   )
   subjectToInstance: SubjectToInstance[];
+
+  @OneToMany(
+    () => ClassToInstance,
+    (classToInstance) => classToInstance.instance,
+  )
+  classToInstance: ClassToInstance[];
 }
