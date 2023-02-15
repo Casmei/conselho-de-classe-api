@@ -1,44 +1,40 @@
-import { InviteUser } from 'src/module/user/entities/invite-user.entity';
+import { SubjectToInstance } from 'src/module/subject/entities/subject-to-instance.entity';
 import { User } from 'src/module/user/entities/user.entity';
+import { CustomBaseDateEntity } from 'src/shared/entity/CustomBaseEntity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
   JoinColumn,
-  ManyToMany,
-  ManyToOne,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
 } from 'typeorm';
-import { UserToInstance } from './UserToInstance.entity';
+import { InstanceInvite } from './instance-invite.entity';
+import { UserToInstance } from './user-to-instance.entity';
 
 @Entity()
-export class Instance {
+export class Instance extends CustomBaseDateEntity {
   @PrimaryGeneratedColumn('increment')
   id: number;
 
   @Column()
   name: string;
 
-  @OneToMany(() => UserToInstance, (userToInstance) => userToInstance.instance)
-  userToInstance: UserToInstance[];
-
   @OneToOne(() => User, { cascade: true, onDelete: 'CASCADE' })
   @JoinColumn()
   userOwner: User;
 
-  @OneToMany(() => InviteUser, (invite) => invite.instance)
-  invites: InviteUser[];
+  @OneToMany(() => InstanceInvite, (invite) => invite.instance)
+  invites: InstanceInvite[];
 
-  @CreateDateColumn()
-  createdAt: Date;
+  @OneToMany(() => UserToInstance, (userToInstance) => userToInstance.instance)
+  userToInstance: UserToInstance[];
 
-  @UpdateDateColumn()
-  updatedAt: Date;
-
-  @DeleteDateColumn()
-  deletedAt: Date;
+  @OneToMany(
+    () => SubjectToInstance,
+    (subjectToInstance) => subjectToInstance.instance,
+  )
+  subjectToInstance: SubjectToInstance[];
 }

@@ -1,15 +1,13 @@
-import {
-  BadRequestException,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
-import { UserService } from '../user/user.service';
+import { InviteUserDto } from './dto/invite-user.dto';
+import { UserStatus } from '../user/protocols/user.protocols';
 import { CreateInstanceDto } from './dto/create-instance.dto';
-import { UpdateInstanceDto } from './dto/update-instance.dto';
 import { Instance } from './entities/instance.entity';
-import { UserToInstance } from './entities/UserToInstance.entity';
+import { UserToInstance } from './entities/user-to-instance.entity';
+import * as crypto from 'crypto';
+import { InstanceInvite } from './entities/instance-invite.entity';
 
 @Injectable()
 export class InstanceService {
@@ -18,7 +16,8 @@ export class InstanceService {
     private readonly instanceRepository: Repository<Instance>,
     @InjectRepository(UserToInstance)
     private readonly userToInstanceRepository: Repository<UserToInstance>,
-    private userService: UserService,
+    @InjectRepository(InstanceInvite)
+    private readonly instanceInviteRespository: Repository<InstanceInvite>,
   ) {}
 
   async create(user: any, data: CreateInstanceDto) {
@@ -58,6 +57,17 @@ export class InstanceService {
         },
         relations: {
           userToInstance: { user: true },
+          userOwner: true,
+        },
+        select: {
+          userToInstance: {
+            subscription_instance: true,
+            role: true,
+            classes: true,
+            subjects: true,
+            user: { id: true, name: true, email: true },
+          },
+          userOwner: { id: true, name: true, email: true },
         },
       });
 
@@ -67,58 +77,87 @@ export class InstanceService {
     }
   }
 
-  async update(
-    institutionId: string,
-    userPaylaod: any,
-    data: UpdateInstanceDto,
-  ) {
-    return this.instanceRepository.update(institutionId, data);
+  async inviteUser(data: InviteUserDto, instance_id: number, user_id: string) {
+    if (!(await this.existsInstance(instance_id))) {
+      throw new BadRequestException('instance no exist');
+    }
+
+    const code = crypto.randomUUID().slice(0, 6);
+    await this.instanceInviteRespository.save({
+      code,
+      instance: { id: instance_id },
+      owner_invite: { id: user_id },
+      invite_extra_data: {
+        userData: {
+          email: data.email,
+          role: data.role,
+          classes: data.classes,
+          subjects: data.subjects,
+        },
+        status: UserStatus.INVITED,
+      },
+    });
+
+    return { link: `http://localhost:3033/institution/invite/${code}` };
+  }
+
+  async findInviteByCode(code: string) {
+    return this.instanceInviteRespository.findOne({
+      where: { code },
+      relations: { instance: true, owner_invite: true },
+    });
   }
 
   async joinInstanceByCode(code: string, user: any) {
-    /**
-     * [] - Verificar se o email do convite é o mesmo da pessoa autenticada
-     * [x] - Verificar se o dono do convite não é o mesmo que está tentando entrar
-     * [] - Verificar se o usuário já está dentro da instancia
-     * [] - Verificar a válida do convite e mudar de Invited para Active
-     * [] - Tratar o retorna da response
-     */
-
-    const invite = await this.userService.findInviteByCode(code);
-
-    const isOwner = !!(await this.instanceRepository.findOneBy({
-      userOwner: { id: user.id },
-      id: invite.instance.id,
-    }));
-
-    //TODO: tem como comparar o id da pessoa autenticada com o id do dono do convite, porém não funcionou
-    if (isOwner) {
-      throw new UnauthorizedException(
-        'O dono da instância não pode entrar nela atráves de um convite',
-      );
-    }
-
-    if (invite.invite_extra_data.userData.email !== user.email) {
-      throw new UnauthorizedException(
-        'Você não tem autorização para usar esse convite',
-      );
-    }
-    const instance = await this.instanceRepository.findOneBy({
-      id: invite.instance.id,
+    const invite = await this.findInviteByCode(code);
+    const instance = await this.instanceRepository.findOne({
+      where: {
+        id: invite.instance.id,
+      },
+      relations: {
+        userToInstance: { user: true },
+      },
     });
 
-    // return this.userToInstanceRepository.save({
-    //   instance,
-    //   user: { id: user.id },
-    //   subscription_instance: new Date(),
-    //   classes: invite.invite_extra_data.userData.classes,
-    //   subjects: invite.invite_extra_data.userData.subjects,
-    //   role: invite.invite_extra_data.userData.role,
-    // });
+    this.instanceInviteRespository.update(invite.id, {
+      ...invite,
+      invite_extra_data: {
+        ...invite.invite_extra_data,
+        status: UserStatus.ACTIVE,
+      },
+    });
+
+    return this.userToInstanceRepository.save({
+      instance,
+      user: { id: user.id },
+      subscription_instance: new Date(),
+      classes: invite.invite_extra_data.userData.classes,
+      subjects: invite.invite_extra_data.userData.subjects,
+      role: invite.invite_extra_data.userData.role,
+    });
   }
 
   private async isOwner(id: string) {
-    //TODO: aplicar estrategia de cache
-    return !!(await this.instanceRepository.findOneBy({ userOwner: { id } }));
+    return !!(await this.instanceRepository.countBy({ userOwner: { id } }));
+  }
+
+  private async existsInstance(id: number) {
+    return this.instanceRepository.countBy({ id });
+  }
+
+  async userBelongsToInstance(instanceId: number, userId: string) {
+    const instance = await this.instanceRepository.findOne({
+      where: { id: instanceId },
+      relations: { userToInstance: true },
+    });
+
+    if (instance) {
+      const users = instance.userToInstance.map(
+        (userToInstance) => userToInstance.user.id,
+      );
+      return users.includes(userId);
+    } else {
+      return false;
+    }
   }
 }

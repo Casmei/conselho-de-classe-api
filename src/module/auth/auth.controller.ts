@@ -31,15 +31,6 @@ class AuthController {
   async signup(@Body() data: AuthRegisterDTO) {
     return await this.authService.createUserAccount(data);
   }
-
-  // @ApiOperation({
-  //   summary: 'Cadastra um usuário no sistema quem chegou atráves de um convite',
-  // })
-  // @SkipJwt()
-  // @Post('register')
-  // async signupWithInvite(@Body() data: AuthRegisterDTO) {
-  //   return await this.authService.createUserAccount(data);
-  // }
 }
 
 export default AuthController;
