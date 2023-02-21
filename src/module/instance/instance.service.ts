@@ -152,10 +152,10 @@ export class InstanceService {
     });
 
     if (instance) {
-      const users = instance.userToInstance.map(
-        (userToInstance) => userToInstance.user.id,
+      const users = instance.userToInstance.some(
+        (userToInstance) => userToInstance.user.id === userId,
       );
-      return users.includes(userId);
+      return users;
     } else {
       return false;
     }

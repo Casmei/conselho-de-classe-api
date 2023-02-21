@@ -16,7 +16,7 @@ import { InstanceService } from './instance.service';
 import { InviteGuard } from './guard/invite.guard';
 
 @ApiTags('Instituição')
-@Controller('institution')
+@Controller('institutions')
 export class InstanceController {
   constructor(private readonly instanceService: InstanceService) {}
 

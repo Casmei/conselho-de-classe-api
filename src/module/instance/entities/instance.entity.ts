@@ -1,11 +1,9 @@
-import { ClassToInstance } from 'src/module/class/entities/class-to-instance.entity';
-import { SubjectToInstance } from 'src/module/subject/entities/subject-to-instance.entity';
+import { Class } from 'src/module/class/entities/class.entity';
+import { Subject } from 'src/module/subject/entities/subject.entity';
 import { User } from 'src/module/user/entities/user.entity';
 import { CustomBaseDateEntity } from 'src/shared/entity/CustomBaseEntity';
 import {
   Column,
-  CreateDateColumn,
-  DeleteDateColumn,
   Entity,
   JoinColumn,
   OneToMany,
@@ -33,15 +31,9 @@ export class Instance extends CustomBaseDateEntity {
   @OneToMany(() => UserToInstance, (userToInstance) => userToInstance.instance)
   userToInstance: UserToInstance[];
 
-  @OneToMany(
-    () => SubjectToInstance,
-    (subjectToInstance) => subjectToInstance.instance,
-  )
-  subjectToInstance: SubjectToInstance[];
+  @OneToMany(() => Class, (singleClass) => singleClass.instance)
+  classes: Class[];
 
-  @OneToMany(
-    () => ClassToInstance,
-    (classToInstance) => classToInstance.instance,
-  )
-  classToInstance: ClassToInstance[];
+  @OneToMany(() => Subject, (subject) => subject.instance)
+  subjects: Subject[];
 }

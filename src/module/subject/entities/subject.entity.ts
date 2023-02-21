@@ -1,15 +1,12 @@
+import { Instance } from 'src/module/instance/entities/instance.entity';
 import CustomBaseEntity from 'src/shared/entity/CustomBaseEntity';
-import { Column, Entity, OneToMany } from 'typeorm';
-import { SubjectToInstance } from './subject-to-instance.entity';
+import { Column, Entity, ManyToOne } from 'typeorm';
 
 @Entity()
 export class Subject extends CustomBaseEntity {
   @Column()
   name: string;
 
-  @OneToMany(
-    () => SubjectToInstance,
-    (subjectToInstance) => subjectToInstance.subject,
-  )
-  subjectToInstance: SubjectToInstance[];
+  @ManyToOne(() => Instance, (instance) => instance.subjects)
+  instance: Instance;
 }
