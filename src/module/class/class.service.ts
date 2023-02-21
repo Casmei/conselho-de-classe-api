@@ -16,20 +16,21 @@ export class ClassService {
     private readonly classRepository: Repository<Class>,
   ) {}
 
-  async create(data: CreateClassDto) {
+  async create(instanceId: number, data: CreateClassDto) {
     try {
-      return this.classRepository.save(data);
+      return this.classRepository.save({
+        ...data,
+        instance: { id: instanceId },
+      });
     } catch (error) {
       throw new BadRequestException();
     }
   }
 
-  async findAll() {
-    try {
-      return this.classRepository.find();
-    } catch (error) {
-      throw new BadRequestException();
-    }
+  async findAll(instanceId: number) {
+    return this.classRepository.find({
+      where: { instance: { id: instanceId } },
+    });
   }
 
   async findOne(id: string) {

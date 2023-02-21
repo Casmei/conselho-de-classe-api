@@ -6,55 +6,57 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { UserBelongsToIntance } from '../instance/guard/user-belongs-to-instance.guard';
 import { ClassService } from './class.service';
 import { CreateClassDto } from './dto/create-class.dto';
-import { UpdateClassDto } from './dto/update-class.dto';
 
 @ApiBearerAuth()
 @ApiTags('Turma')
-@Controller('class')
+@UseGuards(UserBelongsToIntance)
+@Controller('institutions')
 export class ClassController {
   constructor(private readonly classService: ClassService) {}
 
-  @ApiOperation({
-    summary: 'Cria uma nova classe no sistema',
-  })
-  @Post()
-  create(@Body() data: CreateClassDto) {
-    return this.classService.create(data);
+  @Post(':instance_id/classes')
+  create(
+    @Param('instance_id') instanceId: number,
+    @Body() data: CreateClassDto,
+  ) {
+    return this.classService.create(instanceId, data);
   }
 
-  @ApiOperation({
-    summary: 'Retorna todas as classes encontradas no sistema',
-  })
-  @Get()
-  findAll() {
-    return this.classService.findAll();
+  @Get(':instance_id/classes')
+  findAll(@Param('instance_id') instanceId: number) {
+    return this.classService.findAll(instanceId);
   }
 
-  @ApiOperation({
-    summary: 'Retorna a classe referente ao id passado no parâmetro',
-  })
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.classService.findOne(id);
-  }
+  // @ApiOperation({
+  //   summary: 'Retorna a classe referente ao id passado no parâmetro',
+  // })
+  // @ApiBearerAuth()
+  // @Get(':instance_id/class/:id')
+  // findOne(@Param('id') id: string) {
+  //   return this.classService.findOne(id);
+  // }
 
-  @ApiOperation({
-    summary: 'Atualiza algum valor da classe',
-  })
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() data: UpdateClassDto) {
-    return this.classService.update(id, data);
-  }
+  // @ApiOperation({
+  //   summary: 'Atualiza algum valor da classe',
+  // })
+  // @ApiBearerAuth()
+  // @Patch(':id')
+  // update(@Param('id') id: string, @Body() data: UpdateClassDto) {
+  //   return this.classService.update(id, data);
+  // }
 
-  @ApiOperation({
-    summary: 'Realiza uma softdelete da classe pelo id passado no parâmetro',
-  })
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.classService.remove(id);
-  }
+  // @ApiOperation({
+  //   summary: 'Realiza uma softdelete da classe pelo id passado no parâmetro',
+  // })
+  // @ApiBearerAuth()
+  // @Delete(':id')
+  // remove(@Param('id') id: string) {
+  //   return this.classService.remove(id);
+  // }
 }

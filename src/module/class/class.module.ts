@@ -3,10 +3,10 @@ import { ClassService } from './class.service';
 import { ClassController } from './class.controller';
 import { Class } from './entities/class.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ClassToInstance } from './entities/class-to-instance.entity';
+import { InstanceModule } from '../instance/instance.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Class, ClassToInstance])],
+  imports: [TypeOrmModule.forFeature([Class]), InstanceModule],
   controllers: [ClassController],
   providers: [ClassService],
 })
