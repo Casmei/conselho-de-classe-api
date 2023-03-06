@@ -9,6 +9,7 @@ class TypeOrmConfig {
     return {
       type: 'postgres',
       host: configService.get('DB_HOST'),
+      ssl: configService.get('CONTEXT') === 'dev' ? false : true,
       port: configService.get('DB_PORT'),
       username: configService.get('DB_USER'),
       password: configService.get<string>('DB_PASSWORD'),
