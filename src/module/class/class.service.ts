@@ -33,40 +33,50 @@ export class ClassService {
     });
   }
 
-  async findOne(id: string) {
+  async findOne(instanceId: number, id: string) {
     try {
-      await this.classExists(id);
+      const singleClass = await this.classRepository.findOneBy({
+        id,
+        instance: { id: instanceId },
+      });
 
-      return this.classRepository.findOneBy({ id });
+      if (!singleClass) {
+        throw new NotFoundException();
+      }
+
+      return singleClass;
     } catch (error) {
       throw new BadRequestException();
     }
   }
 
-  async update(id: string, data: UpdateClassDto) {
+  async update(instanceId: number, id: string, data: UpdateClassDto) {
     try {
-      await this.classExists(id);
-
+      if (!(await this.classBelongsToInstitution(instanceId, id))) {
+        throw new NotFoundException();
+      }
       return this.classRepository.update(id, data);
     } catch (error) {
       throw new BadRequestException();
     }
   }
 
-  async remove(id: string) {
+  async remove(instanceId: number, id: string) {
     try {
-      await this.classExists(id);
-
+      if (!(await this.classBelongsToInstitution(instanceId, id))) {
+        throw new NotFoundException();
+      }
       return this.classRepository.softDelete(id);
     } catch (error) {
       throw new BadRequestException();
     }
   }
 
-  private async classExists(id: string) {
-    if (!(await this.classRepository.findOneBy({ id }))) {
-      throw new NotFoundException('Usuário não encontrado');
-    }
+  private async classBelongsToInstitution(instanceId: number, classId: string) {
+    return !!this.classRepository.countBy({
+      instance: { id: instanceId },
+      id: classId,
+    });
   }
 
   async retrieveOrCreate(instanceId: number, data: CreateClassDto) {
