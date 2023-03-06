@@ -1,15 +1,47 @@
-import { Controller, Post } from '@nestjs/common';
-import { StudentService } from './student.service';
+import {
+  Controller,
+  Get,
+  Param,
+  ParseFilePipe,
+  Patch,
+  Post,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
+
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { StudentService } from './student.service';
+import { UserBelongsToIntance } from '../instance/guard/user-belongs-to-instance.guard';
+import { VerifyRole } from '../auth/decorators/verify-role.decorator';
+import { userRoles } from '../user/protocols/user.protocols';
 
 @ApiBearerAuth()
 @ApiTags('Estudante')
-@Controller('student')
+@VerifyRole(userRoles.MANAGER)
+@UseGuards(UserBelongsToIntance)
+@Controller('institutions')
 export class StudentController {
   constructor(private readonly studentService: StudentService) {}
+  @Post(':instance_id/students')
+  //TODO: validar tipo e limite de arquivo
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadStudents(
+    @UploadedFile(ParseFilePipe) file,
+    @Param('instance_id') instanceId: number,
+  ) {
+    const csvString: string = file.buffer.toString();
+    return this.studentService.createParseCsv(instanceId, csvString);
+  }
 
-  @Post('upload')
-  uploadFile() {
-    //TODO: fazer sistema de upload de arquivo bem como o crud do aluno
+  @Patch(':instance_id/students')
+  @UseInterceptors(FileInterceptor('file'))
+  async updateStudents(
+    @UploadedFile(ParseFilePipe) file,
+    @Param('instance_id') instanceId: number,
+  ) {
+    const csvString: string = file.buffer.toString();
+    return this.studentService.updateStudentCsv(instanceId, csvString);
   }
 }

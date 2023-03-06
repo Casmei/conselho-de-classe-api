@@ -1,26 +1,80 @@
 import { Injectable } from '@nestjs/common';
-import { CreateStudentDto } from './dto/create-student.dto';
-import { UpdateStudentDto } from './dto/update-student.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { ClassService } from '../class/class.service';
+import { CourseService } from '../course/course.service';
+import { Student } from './entities/student.entity';
 
 @Injectable()
 export class StudentService {
-  create(createStudentDto: CreateStudentDto) {
-    return 'This action adds a new student';
+  constructor(
+    @InjectRepository(Student)
+    private readonly studentRepository: Repository<Student>,
+    private readonly classService: ClassService,
+    private readonly courseService: CourseService,
+  ) {}
+  async createParseCsv(instanceId: number, file: string) {
+    const lines = file.split(/\r?\n/).slice(1);
+    const students = [];
+
+    for (const line of lines) {
+      const [name, registration, contract, course, className] = line.split(',');
+
+      const student = new Student();
+      student.name = name;
+      student.registration = registration;
+      student.contract = contract;
+
+      const courseObj = await this.courseService.retrieveOrCreate(instanceId, {
+        name: course,
+      });
+
+      student.course = courseObj;
+
+      const classObj = await this.classService.retrieveOrCreate(instanceId, {
+        name: className,
+      });
+
+      student.class = classObj;
+
+      students.push(student);
+    }
+
+    await this.studentRepository.save(students);
   }
 
-  findAll() {
-    return `This action returns all student`;
-  }
+  async updateStudentCsv(instanceId: number, file: string) {
+    const lines = file.split(/\r?\n/).slice(1);
 
-  findOne(id: number) {
-    return `This action returns a #${id} student`;
-  }
+    for (const line of lines) {
+      const [name, registration, contract, course, className] = line.split(',');
 
-  update(id: number, updateStudentDto: UpdateStudentDto) {
-    return `This action updates a #${id} student`;
-  }
+      const student = await this.studentRepository.findOne({
+        where: {
+          registration,
+        },
+      });
 
-  remove(id: number) {
-    return `This action removes a #${id} student`;
+      if (student) {
+        student.name = name;
+        student.contract = contract;
+
+        const courseObj = await this.courseService.retrieveOrCreate(
+          instanceId,
+          {
+            name: course,
+          },
+        );
+
+        student.course = courseObj;
+
+        const classObj = await this.classService.retrieveOrCreate(instanceId, {
+          name: className,
+        });
+        student.class = classObj;
+
+        this.studentRepository.update(student.id, student);
+      }
+    }
   }
 }

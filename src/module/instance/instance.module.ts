@@ -6,10 +6,16 @@ import { InstanceController } from './instance.controller';
 import { InstanceService } from './instance.service';
 import { UserToInstance } from './entities/user-to-instance.entity';
 import { InstanceInvite } from './entities/instance-invite.entity';
+import { UserInstanceRole } from './entities/role.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Instance, UserToInstance, InstanceInvite]),
+    TypeOrmModule.forFeature([
+      Instance,
+      UserToInstance,
+      InstanceInvite,
+      UserInstanceRole,
+    ]),
     UserModule,
   ],
   controllers: [InstanceController],

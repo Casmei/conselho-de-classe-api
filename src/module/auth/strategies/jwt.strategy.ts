@@ -18,6 +18,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     return {
       id: payload.sub,
       name: payload.username,
+      //TODO: como mudar o token quando mudar de instituição
       role: payload.role,
       email: payload.email,
     };

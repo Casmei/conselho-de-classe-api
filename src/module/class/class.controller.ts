@@ -8,13 +8,16 @@ import {
   Delete,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { VerifyRole } from '../auth/decorators/verify-role.decorator';
 import { UserBelongsToIntance } from '../instance/guard/user-belongs-to-instance.guard';
+import { userRoles } from '../user/protocols/user.protocols';
 import { ClassService } from './class.service';
 import { CreateClassDto } from './dto/create-class.dto';
 
 @ApiBearerAuth()
 @ApiTags('Turma')
+@VerifyRole(userRoles.MANAGER)
 @UseGuards(UserBelongsToIntance)
 @Controller('institutions')
 export class ClassController {

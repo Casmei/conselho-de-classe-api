@@ -68,4 +68,19 @@ export class ClassService {
       throw new NotFoundException('Usuário não encontrado');
     }
   }
+
+  async retrieveOrCreate(instanceId: number, data: CreateClassDto) {
+    const existClass = await this.classRepository.findOne({
+      where: {
+        instance: { id: instanceId },
+        ...data,
+      },
+    });
+
+    if (!existClass) {
+      return this.create(instanceId, data);
+    }
+
+    return existClass;
+  }
 }

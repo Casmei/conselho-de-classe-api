@@ -9,5 +9,6 @@ import { InstanceModule } from '../instance/instance.module';
   imports: [TypeOrmModule.forFeature([Class]), InstanceModule],
   controllers: [ClassController],
   providers: [ClassService],
+  exports: [ClassService],
 })
 export class ClassModule {}

@@ -17,6 +17,7 @@ import { mailConfigAsync } from './config/mail.config';
 import { bullConfigAsync } from './config/queue.config';
 import RoleGuard from './module/auth/guards/role.guard';
 import { InstanceModule } from './module/instance/instance.module';
+import { InstitutionRoleGuard } from './module/instance/guard/institution-role.guard';
 
 @Module({
   imports: [
@@ -43,7 +44,7 @@ import { InstanceModule } from './module/instance/instance.module';
     },
     {
       provide: APP_GUARD,
-      useClass: RoleGuard,
+      useClass: InstitutionRoleGuard,
     },
   ],
 })

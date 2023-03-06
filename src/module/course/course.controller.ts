@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { VerifyRole } from '../auth/decorators/verify-role.decorator';
@@ -22,9 +23,12 @@ export class CourseController {
 
   @ApiOperation({ summary: 'Cria um novo curso no sistema' })
   @VerifyRole(userRoles.MANAGER)
-  @Post()
-  create(@Body() data: CreateCourseDto) {
-    return this.courseService.create(data);
+  @Post(':instance_id')
+  create(
+    @Body() data: CreateCourseDto,
+    @Param('instance_id', ParseIntPipe) instanceId: number,
+  ) {
+    return this.courseService.create(instanceId, data);
   }
 
   @ApiOperation({ summary: 'Retorna todos os cursos do sistema' })

@@ -8,6 +8,8 @@ import { Instance } from './entities/instance.entity';
 import { UserToInstance } from './entities/user-to-instance.entity';
 import * as crypto from 'crypto';
 import { InstanceInvite } from './entities/instance-invite.entity';
+import { UserInstanceRole } from './entities/role.entity';
+import { userRoles } from '../user/protocols/user.protocols';
 
 @Injectable()
 export class InstanceService {
@@ -18,6 +20,8 @@ export class InstanceService {
     private readonly userToInstanceRepository: Repository<UserToInstance>,
     @InjectRepository(InstanceInvite)
     private readonly instanceInviteRespository: Repository<InstanceInvite>,
+    @InjectRepository(UserInstanceRole)
+    private readonly userRoleRepository: Repository<UserInstanceRole>,
   ) {}
 
   async create(user: any, data: CreateInstanceDto) {
@@ -37,7 +41,21 @@ export class InstanceService {
       subscription_instance: new Date(),
     });
 
+    await this.createUserRole(user.id, instance);
+
     return instance;
+  }
+
+  async createUserRole(
+    userId: string,
+    instance: Instance,
+    role: userRoles = userRoles.MANAGER,
+  ): Promise<void> {
+    await this.userRoleRepository.save({
+      user: { id: userId },
+      instance,
+      role,
+    });
   }
 
   async findAllByUser(userPaylaod: any) {
@@ -159,5 +177,31 @@ export class InstanceService {
     } else {
       return false;
     }
+  }
+
+  async hasPermision(
+    instanceId: number,
+    userId: string,
+    role: userRoles = userRoles.MANAGER,
+  ) {
+    console.log('🚀 ~ role:', role);
+
+    console.log('🚀 ~ userId:', userId);
+
+    console.log('🚀 ~ instanceId:', instanceId);
+
+    console.log(
+      !!(await this.userRoleRepository.countBy({
+        instance: { id: instanceId },
+        user: { id: userId },
+        role,
+      })),
+    );
+
+    return !!(await this.userRoleRepository.countBy({
+      instance: { id: instanceId },
+      user: { id: userId },
+      role,
+    }));
   }
 }
