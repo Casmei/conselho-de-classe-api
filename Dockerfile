@@ -18,7 +18,7 @@ FROM dependencies AS build
 FROM init AS production
     ENV NODE_ENV=production
     COPY --chown=node:node ./package*.json ./
-    RUN npm ci
+    RUN npm ci --force
     COPY --chown=node:node --from=build /usr/src/app/dist .
     EXPOSE 3000
     CMD ["node", "main"]
