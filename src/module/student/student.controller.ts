@@ -35,6 +35,11 @@ export class StudentController {
     return this.studentService.createParseCsv(instanceId, csvString);
   }
 
+  @Get(':instance_id/students')
+  async getAll(@Param('instance_id') instanceId: number) {
+    return this.studentService.getAll(instanceId);
+  }
+
   @Patch(':instance_id/students')
   @UseInterceptors(FileInterceptor('file'))
   async updateStudents(

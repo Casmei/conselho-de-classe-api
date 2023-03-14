@@ -1,5 +1,6 @@
 import { Class } from 'src/module/class/entities/class.entity';
 import { Course } from 'src/module/course/entities/course.entity';
+import { Student } from 'src/module/student/entities/student.entity';
 import { Subject } from 'src/module/subject/entities/subject.entity';
 import { User } from 'src/module/user/entities/user.entity';
 import { CustomBaseDateEntity } from 'src/shared/entity/CustomBaseEntity';
@@ -38,9 +39,12 @@ export class Instance extends CustomBaseDateEntity {
   })
   classes: Class[];
 
-  @OneToMany(() => Course, (course) => course)
-  course: Course[];
+  @OneToMany(() => Course, (course) => course.instance)
+  courses: Course[];
 
   @OneToMany(() => Subject, (subject) => subject.instance)
   subjects: Subject[];
+
+  @OneToMany(() => Student, (student) => student.instance)
+  students: Student[];
 }

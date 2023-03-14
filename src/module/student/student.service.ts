@@ -40,7 +40,23 @@ export class StudentService {
       students.push(student);
     }
 
-    await this.studentRepository.save(students);
+    await this.studentRepository.insert(
+      students.map((student) => ({ ...student, instance: { id: instanceId } })),
+    );
+  }
+
+  async getAll(instanceId: number) {
+    console.log('🚀 ~ instanceId:', instanceId);
+
+    const students = await this.studentRepository.find({
+      where: { instance: { id: instanceId } },
+      relations: {
+        class: true,
+        course: true,
+      },
+    });
+
+    return students;
   }
 
   async updateStudentCsv(instanceId: number, file: string) {

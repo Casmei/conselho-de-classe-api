@@ -1,5 +1,6 @@
 import { Class } from 'src/module/class/entities/class.entity';
 import { Course } from 'src/module/course/entities/course.entity';
+import { Instance } from 'src/module/instance/entities/instance.entity';
 import CustomBaseEntity from 'src/shared/entity/CustomBaseEntity';
 import { Column, Entity, ManyToOne } from 'typeorm';
 
@@ -21,4 +22,9 @@ export class Student extends CustomBaseEntity {
     nullable: true,
   })
   class: Class;
+
+  @ManyToOne(() => Instance, (instance) => instance.students, {
+    nullable: true,
+  })
+  instance: Instance;
 }
