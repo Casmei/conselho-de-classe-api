@@ -19,11 +19,12 @@ import { userRoles } from '../user/protocols/user.protocols';
 
 @ApiBearerAuth()
 @ApiTags('Estudante')
-@VerifyRole(userRoles.MANAGER)
-@UseGuards(UserBelongsToIntance)
+// @VerifyRole(userRoles.MANAGER)
+// @UseGuards(UserBelongsToIntance)
 @Controller('institutions')
 export class StudentController {
   constructor(private readonly studentService: StudentService) {}
+
   @Post(':instance_id/students')
   //TODO: validar tipo e limite de arquivo
   @UseInterceptors(FileInterceptor('file'))
@@ -43,5 +44,12 @@ export class StudentController {
   ) {
     const csvString: string = file.buffer.toString();
     return this.studentService.updateStudentCsv(instanceId, csvString);
+  }
+
+  @Get(':instance_id/students')
+  getAllInstanceStudens(
+    @Param('instance_id') instance_id: number
+  ) {
+    return this.studentService.getAllByInstance(instance_id);
   }
 }

@@ -13,6 +13,7 @@ export class StudentService {
     private readonly classService: ClassService,
     private readonly courseService: CourseService,
   ) {}
+
   async createParseCsv(instanceId: number, file: string) {
     const lines = file.split(/\r?\n/).slice(1);
     const students = [];
@@ -76,5 +77,15 @@ export class StudentService {
         this.studentRepository.update(student.id, student);
       }
     }
+  }
+
+  async getAllByInstance(instanceId: number) {
+    const students = this.studentRepository
+      .createQueryBuilder('student')
+      .innerJoinAndSelect('student.class', 'class')
+      .innerJoinAndSelect('student.course', 'course')
+      .where('class.instanceId = :instance_id', { instance_id: instanceId });
+    
+    return await students.getMany();
   }
 }
