@@ -179,25 +179,17 @@ export class InstanceService {
     }
   }
 
+  async findInstanceByUserRelation(userToInstanceId: string) {
+    return await this.userToInstanceRepository.find({
+      where: { id: userToInstanceId },
+    });
+  }
+
   async hasPermision(
     instanceId: number,
     userId: string,
     role: userRoles = userRoles.MANAGER,
   ) {
-    console.log('🚀 ~ role:', role);
-
-    console.log('🚀 ~ userId:', userId);
-
-    console.log('🚀 ~ instanceId:', instanceId);
-
-    console.log(
-      !!(await this.userRoleRepository.countBy({
-        instance: { id: instanceId },
-        user: { id: userId },
-        role,
-      })),
-    );
-
     return !!(await this.userRoleRepository.countBy({
       instance: { id: instanceId },
       user: { id: userId },

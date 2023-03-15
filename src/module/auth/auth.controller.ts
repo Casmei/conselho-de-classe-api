@@ -20,7 +20,7 @@ class AuthController {
   @UseGuards(AuthGuard('local'))
   @Post('login')
   async signin(@Req() req: Request) {
-    return this.authService.login(req.user);
+    return await this.authService.login(req.user);
   }
 
   @ApiOperation({
