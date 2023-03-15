@@ -6,9 +6,7 @@ import { UserService } from './user.service';
 @ApiTags('Usuário')
 @Controller('users')
 export class UserController {
-  constructor(
-    private readonly userService: UserService,
-  ) {}
+  constructor(private readonly userService: UserService) {}
 
   @ApiOperation({ summary: 'Retorna todos os usuários' })
   @Get()
