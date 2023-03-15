@@ -5,16 +5,14 @@ import { AuthRegisterDTO } from './dto/auth-register.dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '../user/entities/user.entity';
-import { InstanceService } from '../instance/instance.service';
 
 @Injectable()
 class AuthService {
   constructor(
     private userService: UserService,
-    private instanceService: InstanceService,
     private jwtService: JwtService,
   ) {}
-
+  
   async validateUser(credentials: AuthLoginDTO) {
     return await this.userService.findOneByCredentials(credentials);
   }
@@ -24,16 +22,22 @@ class AuthService {
     return await this.userService.create(credentials);
   }
 
-  async login({ id }: any) {
-    const user = await this.userService.findOneWithInstance(id);
+  async login(user: any) {
+    let payload = await this.userService.findOne(user.id);
+    const instancePayload = await this.userService.findOneWithInstance(user.id);
+    payload = !instancePayload ? payload : instancePayload;
+    
+    const { id, name, email } = payload;
+    const { id: instanceId, subscription_instance, role } = payload.userToInstance[0];
 
     return {
       access_token: this.jwtService.sign({
-        sub: user.id,
-        name: user.name,
-        email: user.email,
-        instanceId: user.userToInstance[0].instance.id,
-        role: user.userToInstance[0].role,
+        id,
+        name,
+        email,
+        instanceId,
+        subscription_instance,
+        role
       }),
     };
   }
