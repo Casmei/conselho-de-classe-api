@@ -1,18 +1,20 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, createQueryBuilder } from 'typeorm';
 import { User } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
 
 import { AuthLoginDTO } from '../auth/dto/auth-login.dto';
 import { AuthRegisterDTO } from '../auth/dto/auth-register.dto';
 import { UserStatus } from './protocols/user.protocols';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    private readonly jwtService: JwtService
   ) {}
 
   async create(userCredentials: AuthRegisterDTO) {
@@ -40,6 +42,20 @@ export class UserService {
     }
   }
 
+  async findOneWithInstance(id: string) {
+    try {
+      return await this.userRepository
+        .createQueryBuilder('users')
+        .innerJoinAndSelect('users.userToInstance', 'userInstance')
+        .where('userInstance.userId = :user_id', { user_id: id })
+        .getOne();
+    } catch (exception) {
+      throw new BadRequestException(
+        'this user is an Instance Manager'
+      );
+    }
+  }
+
   async findOneByCredentials(credentials: AuthLoginDTO) {
     const user = await this.userRepository.findOne({
       where: { email: credentials.email },
@@ -60,5 +76,10 @@ export class UserService {
     if (!!user) {
       throw new BadRequestException('invalid email');
     }
+  }
+
+  async decodePayload(authorization: string) {
+    const token = authorization.replace('Bearer ', '');
+    return this.jwtService.decode(token);
   }
 }
