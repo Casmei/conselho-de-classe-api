@@ -96,12 +96,10 @@ export class StudentService {
   }
 
   async getAllByInstance(instanceId: number) {
-    const students = this.studentRepository
-      .createQueryBuilder('student')
-      .innerJoinAndSelect('student.class', 'class')
-      .innerJoinAndSelect('student.course', 'course')
-      .where('class.instanceId = :instance_id', { instance_id: instanceId });
-    
-    return await students.getMany();
+    return this.studentRepository.find({
+      where: {
+        instance: { id: instanceId },
+      },
+    });
   }
 }

@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, createQueryBuilder } from 'typeorm';
+import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
 
@@ -14,7 +14,7 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-    private readonly jwtService: JwtService
+    private readonly jwtService: JwtService,
   ) {}
 
   async create(userCredentials: AuthRegisterDTO) {
@@ -38,20 +38,6 @@ export class UserService {
     } catch (error) {
       throw new BadRequestException(
         'an error was triggered when searching for the user',
-      );
-    }
-  }
-
-  async findOneWithInstance(id: string) {
-    try {
-      return await this.userRepository
-        .createQueryBuilder('users')
-        .innerJoinAndSelect('users.userToInstance', 'userInstance')
-        .where('userInstance.userId = :user_id', { user_id: id })
-        .getOne();
-    } catch (exception) {
-      throw new BadRequestException(
-        'this user is an Instance Manager'
       );
     }
   }
