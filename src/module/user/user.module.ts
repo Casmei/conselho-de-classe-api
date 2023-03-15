@@ -6,16 +6,17 @@ import { User } from './entities/user.entity';
 import { BullModule } from '@nestjs/bull';
 import { TeacherLoginMailConsumer } from './jobs/teacher-login-mail.consumer';
 import { TeacherLoginMailProducer } from './jobs/teacher-login-mail.producer';
+import { JwtService } from '@nestjs/jwt';
 
 @Module({
   controllers: [UserController],
-  providers: [UserService, TeacherLoginMailConsumer, TeacherLoginMailProducer],
+  providers: [UserService, TeacherLoginMailConsumer, TeacherLoginMailProducer, JwtService],
   exports: [UserService],
   imports: [
     TypeOrmModule.forFeature([User]),
     BullModule.registerQueue({
       name: 'teacher-login-mail',
-    }),
+    })
   ],
 })
 export class UserModule {}

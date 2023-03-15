@@ -8,7 +8,7 @@ export class Course extends CustomBaseEntity {
   @Column()
   name: string;
 
-  @ManyToOne(() => Instance, (instance) => instance.course)
+  @ManyToOne(() => Instance, (instance) => instance.courses)
   instance: Instance;
 
   @OneToMany(() => Student, (student) => student.course)
