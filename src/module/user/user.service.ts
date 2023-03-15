@@ -14,7 +14,7 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-    private readonly jwtService: JwtService,
+    private readonly jwtService: JwtService
   ) {}
 
   async create(userCredentials: AuthRegisterDTO) {
@@ -44,18 +44,15 @@ export class UserService {
 
   async findOneWithInstance(id: string) {
     try {
-      const userToInstanceId = await this.userRepository.find({
-        where: {
-          userToInstance: { user: { id } },
-        },
-        relations: {
-          userToInstance: { instance: true },
-        },
-      });
-
-      return userToInstanceId[0];
+      return await this.userRepository
+        .createQueryBuilder('users')
+        .innerJoinAndSelect('users.userToInstance', 'userInstance')
+        .where('userInstance.userId = :user_id', { user_id: id })
+        .getOne();
     } catch (exception) {
-      throw new BadRequestException('this user is an Instance Manager');
+      throw new BadRequestException(
+        'this user is an Instance Manager'
+      );
     }
   }
 

@@ -10,18 +10,13 @@ import { JwtService } from '@nestjs/jwt';
 
 @Module({
   controllers: [UserController],
-  providers: [
-    UserService,
-    TeacherLoginMailConsumer,
-    TeacherLoginMailProducer,
-    JwtService,
-  ],
+  providers: [UserService, TeacherLoginMailConsumer, TeacherLoginMailProducer, JwtService],
   exports: [UserService],
   imports: [
     TypeOrmModule.forFeature([User]),
     BullModule.registerQueue({
       name: 'teacher-login-mail',
-    }),
+    })
   ],
 })
 export class UserModule {}
