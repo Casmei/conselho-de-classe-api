@@ -3,9 +3,11 @@ import {
   TypeOrmModuleAsyncOptions,
   TypeOrmModuleOptions,
 } from '@nestjs/typeorm';
+import { DataSource, DataSourceOptions } from 'typeorm';
+import { config } from 'dotenv';
 
-class TypeOrmConfig {
-  static getOrmConfig(configService: ConfigService): TypeOrmModuleOptions {
+export class TypeOrmConfig {
+  static getOrmConfig(configService: ConfigService): DataSourceOptions {
     return {
       type: 'postgres',
       host: configService.get('DB_HOST'),
@@ -14,10 +16,11 @@ class TypeOrmConfig {
       username: configService.get('DB_USER'),
       password: configService.get<string>('DB_PASSWORD'),
       database: configService.get('DB_DATABASE'),
-      autoLoadEntities: true,
+      autoLoadEntities: false,
       synchronize: configService.get<boolean>('DB_SYNC'),
       logging: false,
-    };
+      migrations: ['dist/migrations/**/*.{ts,js}']
+    } as DataSourceOptions;
   }
 }
 
@@ -28,3 +31,8 @@ export const typeOrmConfigAsync: TypeOrmModuleAsyncOptions = {
   ): Promise<TypeOrmModuleOptions> => TypeOrmConfig.getOrmConfig(configService),
   inject: [ConfigService],
 };
+
+const configService = new ConfigService(config());
+const dataSource = new DataSource(TypeOrmConfig.getOrmConfig(configService));
+
+export default dataSource;
