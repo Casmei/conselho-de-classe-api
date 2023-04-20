@@ -34,10 +34,7 @@ Por fim, inicie a aplicação utilizando o docker
 ```bash
   docker compose up --build
 ```
-
-```md
-  Atenção: Verifique se as postas 3000 e 5432 estão disponíveis em sua máquina
-```
+| __Atenção__: Verifique se as postas __3000__ e __5432__ estão disponíveis em sua máquina
 
 ## Documentação
 Foi utilizado o [Swagger](https://docs.nestjs.com/openapi/introduction) para documentar a aplicação, inicie o projeto e entre nesse [link](http://localhost:3000/docs) para acessar a documentação, ou, coloque ```/docs``` na rota raíz.
