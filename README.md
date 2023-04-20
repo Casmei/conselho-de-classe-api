@@ -6,7 +6,7 @@
 Foi repassado ao professor da disciplina de desenvolvimento web uma necessidade do IFNMG - Campus Almenara, esta relacionada aos conselhos de classe. O problema é basicamnte a falta de informações dos professores sobre determinados alunos, gerando divergências e dificultando a tomada de decições acertivas.
 
 ## Proposta
-Como solução, foi elaborado um sistema onde professores tenham a possiblidade de realizar anotações sobre determinados alunos, descrevendo ocorridos em dado momento, elogiando-os ou informando um mal comportamento, de forma que esses comentários sejam úteis no dia do conselho de classe. Esse sistema possui um painel administrativo que facilite a gestão do coordenador dos professores, alunos, matérias, cursos, entre outras entidades.
+Como solução, foi elaborado um sistema onde professores tenham a possiblidade de realizar anotações sobre determinados alunos, estas podem descrever um ocorrido em dado momento, elogiandar ou informando um mal comportamento de um aluno, de forma que esses comentários sejam úteis no dia do conselho de classe. Este sistema possui um painel administrativo que facilita a gestão do coordenador.
 
 ## Instalação
 
