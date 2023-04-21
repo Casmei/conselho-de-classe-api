@@ -3,10 +3,10 @@
 > 🔹 Projeto desenvolvido como avaliação ao pedido de proeficiencia na disciplina de desenvolvimento web.
 
 ## Cenário
-Foi repassado ao professor da disciplina de desenvolvimento web uma necessidade do IFNMG - Campus Almenara, esta relacionada aos conselhos de classe. O problema é basicamnte a falta de informações dos professores sobre determinados alunos, gerando divergências e dificultando a tomada de decições acertivas.
+Foi repassado ao professor da disciplina de desenvolvimento web uma necessidade do IFNMG - Campus Almenara, esta relacionada aos conselhos de classe. O problema é basicamente a falta de informações dos professores sobre determinados alunos, gerando divergências e dificultando a tomada de decisões assertivas.
 
 ## Proposta
-Como solução, foi elaborado um sistema onde professores tenham a possiblidade de realizar anotações sobre determinados alunos, estas podem descrever um ocorrido em dado momento, elogiandar ou informando um mal comportamento de um aluno, de forma que esses comentários sejam úteis no dia do conselho de classe. Este sistema possui um painel administrativo que facilita a gestão do coordenador.
+Como solução, foi elaborado um sistema onde professores tenham a possibilidade de realizar anotações sobre determinados alunos, estas podem descrever um ocorrido em dado momento, elogia-los ou informar um mau comportamento, de forma que esses comentários sejam úteis no dia do conselho de classe.
 
 ## Instalação
 
