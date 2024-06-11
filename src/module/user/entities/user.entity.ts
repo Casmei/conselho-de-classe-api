@@ -1,7 +1,7 @@
-import { InstanceInvite } from 'src/module/instance/entities/instance-invite.entity';
-import { UserToInstance } from 'src/module/instance/entities/user-to-instance.entity';
 import CustomBaseEntity from 'src/shared/entity/CustomBaseEntity';
 import { Column, Entity, OneToMany } from 'typeorm';
+import { userRoles } from '../protocols/user.protocols';
+import { Teacher } from 'src/module/teacher/entities/teacher';
 
 @Entity('users')
 export class User extends CustomBaseEntity {
@@ -14,9 +14,9 @@ export class User extends CustomBaseEntity {
   @Column()
   password: string;
 
-  @OneToMany(() => UserToInstance, (userToInstance) => userToInstance.user)
-  userToInstance: UserToInstance[];
+  @Column({ enum: userRoles, default: userRoles.TEACHER })
+  role: userRoles;
 
-  @OneToMany(() => InstanceInvite, (invite) => invite.owner_invite)
-  invites: InstanceInvite[];
+  @OneToMany(() => Teacher, (teacher) => teacher.teacher)
+  teachers: Teacher[];
 }

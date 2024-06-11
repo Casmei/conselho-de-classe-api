@@ -1,16 +1,20 @@
-import { Instance } from 'src/module/instance/entities/instance.entity';
-import { Student } from 'src/module/student/entities/student.entity';
+import { Course } from 'src/module/course/entities/course.entity';
+import { Teacher } from 'src/module/teacher/entities/teacher';
 import CustomBaseEntity from 'src/shared/entity/CustomBaseEntity';
-import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany, RelationId } from 'typeorm';
 
 @Entity()
 export class Class extends CustomBaseEntity {
   @Column()
   name: string;
 
-  @ManyToOne(() => Instance, (instance) => instance.classes)
-  instance: Instance;
+  @ManyToOne(() => Course, (course) => course.classes)
+  course: Course;
 
-  @OneToMany(() => Student, (student) => student.class)
-  students: Student[];
+  @RelationId((classEntity: Class) => classEntity.course)
+  @Column()
+  courseId: number;
+
+  @OneToMany(() => Teacher, (teacher) => teacher.class)
+  Teachers: Teacher[];
 }

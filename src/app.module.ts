@@ -15,9 +15,9 @@ import { APP_GUARD } from '@nestjs/core';
 import { typeOrmConfigAsync } from './config/database.config';
 import { mailConfigAsync } from './config/mail.config';
 import { bullConfigAsync } from './config/queue.config';
+import { DashboardModule } from './module/dashboard/dashboard.module';
+import { TeacherModule } from './module/teacher/teacher.module';
 import RoleGuard from './module/auth/guards/role.guard';
-import { InstanceModule } from './module/instance/instance.module';
-import { InstitutionRoleGuard } from './module/instance/guard/institution-role.guard';
 
 @Module({
   imports: [
@@ -34,7 +34,8 @@ import { InstitutionRoleGuard } from './module/instance/guard/institution-role.g
     ClassModule,
     SubjectModule,
     StudentModule,
-    InstanceModule,
+    DashboardModule,
+    TeacherModule,
   ],
   controllers: [],
   providers: [
@@ -44,7 +45,7 @@ import { InstitutionRoleGuard } from './module/instance/guard/institution-role.g
     },
     {
       provide: APP_GUARD,
-      useClass: InstitutionRoleGuard,
+      useClass: RoleGuard,
     },
   ],
 })

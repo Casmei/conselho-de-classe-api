@@ -1,16 +1,16 @@
-import { Instance } from 'src/module/instance/entities/instance.entity';
+import { Class } from 'src/module/class/entities/class.entity';
 import { Student } from 'src/module/student/entities/student.entity';
 import CustomBaseEntity from 'src/shared/entity/CustomBaseEntity';
-import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
+import { Column, Entity, OneToMany } from 'typeorm';
 
 @Entity()
 export class Course extends CustomBaseEntity {
   @Column()
   name: string;
 
-  @ManyToOne(() => Instance, (instance) => instance.courses)
-  instance: Instance;
-
   @OneToMany(() => Student, (student) => student.course)
   students: Student[];
+
+  @OneToMany(() => Class, (classEntity) => classEntity.course)
+  classes: Class[];
 }

@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Request,
+  Req,
 } from '@nestjs/common';
 import { CouncilService } from './council.service';
 import { CreateCouncilDto } from './dto/create-council.dto';
@@ -34,6 +35,12 @@ export class CouncilController {
   @Get()
   findAll() {
     return this.councilService.findAll();
+  }
+
+  @ApiOperation({ summary: 'Retorna todas as notas do professor' })
+  @Get('nota')
+  findAllNotes(@Req() req: any) {
+    return req.user.userId;
   }
 
   @ApiOperation({ summary: 'Retorna somente um conselho do sistema' })

@@ -4,12 +4,16 @@ import { Repository } from 'typeorm';
 import { CreateCouncilDto } from './dto/create-council.dto';
 import { UpdateCouncilDto } from './dto/update-council.dto';
 import { Council } from './entities/council.entity';
+import { TeacherNote } from './entities/teacherNote.entity';
 
 @Injectable()
 export class CouncilService {
   constructor(
     @InjectRepository(Council)
     private readonly councilRepository: Repository<Council>,
+
+    @InjectRepository(TeacherNote)
+    private readonly TeacherNoteRepository: Repository<TeacherNote>,
   ) {}
 
   create(createCouncilDto: CreateCouncilDto, userId: string) {

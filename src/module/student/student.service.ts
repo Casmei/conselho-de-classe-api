@@ -14,92 +14,92 @@ export class StudentService {
     private readonly courseService: CourseService,
   ) {}
 
-  async createParseCsv(instanceId: number, file: string) {
-    const lines = file.split(/\r?\n/).slice(1);
-    const students = [];
+  // async createParseCsv(instanceId: number, file: string) {
+  //   const lines = file.split(/\r?\n/).slice(1);
+  //   const students = [];
 
-    for (const line of lines) {
-      const [name, registration, contract, course, className] = line.split(',');
+  //   for (const line of lines) {
+  //     const [name, registration, contract, course, className] = line.split(',');
 
-      const student = new Student();
-      student.name = name;
-      student.registration = registration;
-      student.contract = contract;
+  //     const student = new Student();
+  //     student.name = name;
+  //     student.registration = registration;
+  //     student.contract = contract;
 
-      const courseObj = await this.courseService.retrieveOrCreate(instanceId, {
-        name: course,
-      });
+  //     const courseObj = await this.courseService.retrieveOrCreate(instanceId, {
+  //       name: course,
+  //     });
 
-      student.course = courseObj;
+  //     student.course = courseObj;
 
-      const classObj = await this.classService.retrieveOrCreate(instanceId, {
-        name: className,
-      });
+  //     const classObj = await this.classService.retrieveOrCreate(instanceId, {
+  //       name: className,
+  //     });
 
-      student.class = classObj;
+  //     student.class = classObj;
 
-      students.push(student);
-    }
+  //     students.push(student);
+  //   }
 
-    await this.studentRepository.insert(
-      students.map((student) => ({ ...student, instance: { id: instanceId } })),
-    );
-  }
+  //   await this.studentRepository.insert(
+  //     students.map((student) => ({ ...student, instance: { id: instanceId } })),
+  //   );
+  // }
 
-  async getAll(instanceId: number) {
-    console.log('🚀 ~ instanceId:', instanceId);
+  // async getAll(instanceId: number) {
+  //   console.log('🚀 ~ instanceId:', instanceId);
 
-    const students = await this.studentRepository.find({
-      where: { instance: { id: instanceId } },
-      relations: {
-        class: true,
-        course: true,
-      },
-    });
+  //   const students = await this.studentRepository.find({
+  //     where: { instance: { id: instanceId } },
+  //     relations: {
+  //       class: true,
+  //       course: true,
+  //     },
+  //   });
 
-    return students;
-  }
+  //   return students;
+  // }
 
-  async updateStudentCsv(instanceId: number, file: string) {
-    const lines = file.split(/\r?\n/).slice(1);
+  // async updateStudentCsv(instanceId: number, file: string) {
+  //   const lines = file.split(/\r?\n/).slice(1);
 
-    for (const line of lines) {
-      const [name, registration, contract, course, className] = line.split(',');
+  //   for (const line of lines) {
+  //     const [name, registration, contract, course, className] = line.split(',');
 
-      const student = await this.studentRepository.findOne({
-        where: {
-          registration,
-        },
-      });
+  //     const student = await this.studentRepository.findOne({
+  //       where: {
+  //         registration,
+  //       },
+  //     });
 
-      if (student) {
-        student.name = name;
-        student.contract = contract;
+  //     if (student) {
+  //       student.name = name;
+  //       student.contract = contract;
 
-        const courseObj = await this.courseService.retrieveOrCreate(
-          instanceId,
-          {
-            name: course,
-          },
-        );
+  //       const courseObj = await this.courseService.retrieveOrCreate(
+  //         instanceId,
+  //         {
+  //           name: course,
+  //         },
+  //       );
 
-        student.course = courseObj;
+  //       student.course = courseObj;
 
-        const classObj = await this.classService.retrieveOrCreate(instanceId, {
-          name: className,
-        });
-        student.class = classObj;
+  //       const classObj = await this.classService.retrieveOrCreate(instanceId, {
+  //         name: className,
+  //       });
+  //       student.class = classObj;
 
-        this.studentRepository.update(student.id, student);
-      }
-    }
-  }
+  //       this.studentRepository.update(student.id, student);
+  //     }
+  //   }
+  // }
 
-  async getAllByInstance(instanceId: number) {
-    return this.studentRepository.find({
-      where: {
-        instance: { id: instanceId },
-      },
-    });
-  }
+  // async getAllByInstance(instanceId: number) {
+  //   return this.studentRepository.find({
+  //     where: {
+  //       instance: { id: instanceId },
+  //     },
+  //   });
+  // }
 }

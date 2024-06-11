@@ -1,6 +1,8 @@
 import { Controller, Get, Param, Req } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UserService } from './user.service';
+import { VerifyRole } from '../auth/decorators/verify-role.decorator';
+import { userRoles } from './protocols/user.protocols';
 
 @ApiBearerAuth()
 @ApiTags('Usuário')

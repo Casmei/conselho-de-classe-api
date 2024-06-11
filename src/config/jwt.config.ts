@@ -4,9 +4,9 @@ import { JwtModuleOptions } from '@nestjs/jwt';
 class JwtConfig {
   static getJwtConfig(configService: ConfigService): JwtModuleOptions {
     return {
-      secret: configService.get('JWT_SECRET_PASSWORD'),
+      secret: '123',
       signOptions: {
-        expiresIn: configService.get('JWT_TIME_VALID_TOKEN'),
+        expiresIn: '7d',
       },
     };
   }

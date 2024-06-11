@@ -23,12 +23,9 @@ export class CourseController {
 
   @ApiOperation({ summary: 'Cria um novo curso no sistema' })
   @VerifyRole(userRoles.MANAGER)
-  @Post(':instance_id')
-  create(
-    @Body() data: CreateCourseDto,
-    @Param('instance_id', ParseIntPipe) instanceId: number,
-  ) {
-    return this.courseService.create(instanceId, data);
+  @Post()
+  create(@Body() data: CreateCourseDto) {
+    return this.courseService.create(data);
   }
 
   @ApiOperation({ summary: 'Retorna todos os cursos do sistema' })

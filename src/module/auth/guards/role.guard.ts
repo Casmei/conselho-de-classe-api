@@ -11,17 +11,20 @@ export default class RoleGuard implements CanActivate {
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
-    // const roles = this.reflector.getAllAndOverride<userRoles[]>(ROLE_KEY, [
-    //   context.getHandler(),
-    //   context.getClass(),
-    // ]);
+    const roles = this.reflector.getAllAndOverride<userRoles[]>(ROLE_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
 
-    // if (!roles) {
-    //   const params = context.switchToHttp().getRequest();
-    //   console.log('🚀 ~ params', params);
-    //   return true;
-    // }
-    // pODER USAR O ROLE GUARD QUANDO TRABALHAR NO CONTEXTO DA INSTITUIÇÃO
-    return true;
+    if (!roles) {
+      return true;
+    }
+
+    const request = context.switchToHttp().getRequest();
+    const user = request.user;
+
+    const hasRole = roles.find((role) => user.role === role);
+
+    return !!hasRole;
   }
 }

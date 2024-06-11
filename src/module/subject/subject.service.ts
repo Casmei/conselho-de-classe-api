@@ -17,11 +17,10 @@ export class SubjectService {
     @InjectRepository(Subject)
     private readonly subjectRepository: Repository<Subject>,
   ) {}
-  async create(instanceId: number, data: CreateSubjectDto) {
+  async create(data: CreateSubjectDto) {
     try {
       const subject = await this.subjectRepository.save({
         ...data,
-        instance: { id: instanceId },
       });
 
       return subject;
@@ -30,19 +29,14 @@ export class SubjectService {
     }
   }
 
-  async findAll(instanceId: number) {
-    return this.subjectRepository.find({
-      where: { instance: { id: instanceId } },
-    });
+  async findAll() {
+    return this.subjectRepository.find();
   }
 
-  async findOne(instanceId: number, id: string) {
+  async findOne(id: string) {
     try {
       const subject = this.subjectRepository.findOneOrFail({
-        where: {
-          instance: { id: instanceId },
-          id,
-        },
+        where: { id },
         cache: 60000,
       });
 
@@ -56,7 +50,7 @@ export class SubjectService {
     }
   }
 
-  async update(instanceId: number, id: string, data: UpdateSubjectDto) {
+  async update(id: string, data: UpdateSubjectDto) {
     try {
       return this.subjectRepository.update(id, data);
     } catch (error) {
@@ -64,9 +58,9 @@ export class SubjectService {
     }
   }
 
-  async remove(instanceId: number, id: string) {
+  async remove(id: string) {
     try {
-      return this.subjectRepository.softDelete(id);
+      return this.subjectRepository.delete(id);
     } catch (error) {
       throw new HttpException('subject not found', HttpStatus.NOT_FOUND);
     }

@@ -16,29 +16,23 @@ export class ClassService {
     private readonly classRepository: Repository<Class>,
   ) {}
 
-  async create(instanceId: number, data: CreateClassDto) {
+  async create(data: CreateClassDto) {
     try {
       return this.classRepository.save({
         ...data,
-        instance: { id: instanceId },
       });
     } catch (error) {
       throw new BadRequestException();
     }
   }
 
-  async findAll(instanceId: number) {
-    return this.classRepository.find({
-      where: { instance: { id: instanceId } },
-    });
+  async findAll() {
+    return this.classRepository.find();
   }
 
-  async findOne(instanceId: number, id: string) {
+  async findOne(id: string) {
     try {
-      const singleClass = await this.classRepository.findOneBy({
-        id,
-        instance: { id: instanceId },
-      });
+      const singleClass = await this.classRepository.findOneBy({ id });
 
       if (!singleClass) {
         throw new NotFoundException();
@@ -50,47 +44,19 @@ export class ClassService {
     }
   }
 
-  async update(instanceId: number, id: string, data: UpdateClassDto) {
+  async update(id: string, data: UpdateClassDto) {
     try {
-      if (!(await this.classBelongsToInstitution(instanceId, id))) {
-        throw new NotFoundException();
-      }
       return this.classRepository.update(id, data);
     } catch (error) {
       throw new BadRequestException();
     }
   }
 
-  async remove(instanceId: number, id: string) {
+  async remove(id: string) {
     try {
-      if (!(await this.classBelongsToInstitution(instanceId, id))) {
-        throw new NotFoundException();
-      }
       return this.classRepository.softDelete(id);
     } catch (error) {
       throw new BadRequestException();
     }
-  }
-
-  private async classBelongsToInstitution(instanceId: number, classId: string) {
-    return !!this.classRepository.countBy({
-      instance: { id: instanceId },
-      id: classId,
-    });
-  }
-
-  async retrieveOrCreate(instanceId: number, data: CreateClassDto) {
-    const existClass = await this.classRepository.findOne({
-      where: {
-        instance: { id: instanceId },
-        ...data,
-      },
-    });
-
-    if (!existClass) {
-      return this.create(instanceId, data);
-    }
-
-    return existClass;
   }
 }

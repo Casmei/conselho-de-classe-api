@@ -1,6 +1,6 @@
-import { User } from 'src/module/user/entities/user.entity';
 import CustomBaseEntity from 'src/shared/entity/CustomBaseEntity';
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, OneToMany } from 'typeorm';
+import { TeacherNote } from './teacherNote.entity';
 
 @Entity('councils')
 export class Council extends CustomBaseEntity {
@@ -9,4 +9,7 @@ export class Council extends CustomBaseEntity {
 
   @Column()
   description: string;
+
+  @OneToMany(() => TeacherNote, (teacherNotes) => teacherNotes.council)
+  notes: TeacherNote[];
 }

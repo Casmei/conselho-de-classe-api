@@ -12,10 +12,9 @@ export class CourseService {
     private readonly courseRepository: Repository<Course>,
   ) {}
 
-  async create(instanceId: number, data: CreateCourseDto) {
+  async create(data: CreateCourseDto) {
     try {
       return this.courseRepository.save({
-        instance: { id: instanceId },
         ...data,
       });
     } catch (error) {
@@ -50,21 +49,6 @@ export class CourseService {
   }
 
   remove(id: string) {
-    return this.courseRepository.softDelete(id);
-  }
-
-  async retrieveOrCreate(instanceId: number, data: CreateCourseDto) {
-    const existClass = await this.courseRepository.findOne({
-      where: {
-        instance: { id: instanceId },
-        ...data,
-      },
-    });
-
-    if (!existClass) {
-      return this.create(instanceId, data);
-    }
-
-    return existClass;
+    return this.courseRepository.delete(id);
   }
 }

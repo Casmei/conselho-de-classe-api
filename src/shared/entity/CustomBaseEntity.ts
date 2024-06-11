@@ -1,19 +1,16 @@
 import {
+  BaseEntity,
   CreateDateColumn,
-  DeleteDateColumn,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
-export abstract class CustomBaseDateEntity {
+export abstract class CustomBaseDateEntity extends BaseEntity {
   @CreateDateColumn()
   createdAt: Date;
 
   @UpdateDateColumn()
   updatedAt: Date;
-
-  @DeleteDateColumn()
-  deletedAt: Date;
 }
 export default abstract class CustomBaseEntity extends CustomBaseDateEntity {
   @PrimaryGeneratedColumn('uuid')
